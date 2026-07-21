@@ -1,7 +1,5 @@
-"use client";
-
-import DistortedPortfolio from "@/components/distorted/DistortedPortfolio";
+import PortfolioHome from "@/components/portfolio/PortfolioHome";
 
 export default function Home() {
-  return <DistortedPortfolio />;
+  return <PortfolioHome />;
 }

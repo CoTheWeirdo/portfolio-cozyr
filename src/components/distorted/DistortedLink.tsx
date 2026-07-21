@@ -13,23 +13,11 @@ import {
   type ReactNode,
 } from "react";
 
-export type DistortedDeco =
-  | "line"
-  | "circle"
-  | "box"
-  | "linethrough"
-  | "twolines"
-  | "diagonal";
-
 type SharedProps = {
   children: ReactNode;
   className?: string;
-  /** Decorative shape that receives the SVG displacement */
-  deco?: DistortedDeco;
-  /** Keep deco visible when not hovered */
+  /** Keep underline visible when not hovered */
   decoAlwaysVisible?: boolean;
-  /** Also ripple the label briefly (still restrained) */
-  distortText?: boolean;
 };
 
 type DistortedLinkAsAnchor = SharedProps &
@@ -68,16 +56,15 @@ function useCanDistort() {
 }
 
 /**
- * Codrops-inspired link with SVG-displaced decorative shape on hover.
- * Distorts the deco (and optionally a soft pass on text) — never a heavy loop.
+ * Subtle SVG-displaced underline on hover.
+ * Distorts the decorative line only — label text stays crisp.
+ * Art direction borrowed from Codrops DistortedLinkEffects; not a demo clone.
  */
 export default function DistortedLink(props: DistortedLinkProps) {
   const {
     children,
     className = "",
-    deco = "line",
     decoAlwaysVisible = false,
-    distortText = false,
     as = "a",
     onMouseEnter,
     onMouseLeave,
@@ -87,19 +74,22 @@ export default function DistortedLink(props: DistortedLinkProps) {
   const reactId = useId();
   const filterId = `distorted-deco-${reactId.replace(/:/g, "")}`;
   const canDistort = useCanDistort();
+  const [filtersReady, setFiltersReady] = useState(false);
 
-  const labelRef = useRef<HTMLSpanElement>(null);
   const decoRef = useRef<HTMLSpanElement>(null);
   const displacementRef = useRef<SVGFEDisplacementMapElement>(null);
   const turbulenceRef = useRef<SVGFETurbulenceElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
+  useEffect(() => {
+    setFiltersReady(true);
+  }, []);
+
   const resetFilterTargets = useCallback(() => {
     if (decoRef.current) decoRef.current.style.filter = "none";
-    if (labelRef.current) labelRef.current.style.filter = "none";
     if (displacementRef.current) displacementRef.current.scale.baseVal = 0;
     if (turbulenceRef.current) {
-      turbulenceRef.current.setAttribute("baseFrequency", "0.02 0.45");
+      turbulenceRef.current.setAttribute("baseFrequency", "0.015 0.55");
     }
   }, []);
 
@@ -110,20 +100,23 @@ export default function DistortedLink(props: DistortedLinkProps) {
   }, [resetFilterTargets]);
 
   const playDistort = useCallback(() => {
-    if (!canDistort || !decoRef.current || !displacementRef.current) return;
+    if (
+      !canDistort ||
+      !filtersReady ||
+      !decoRef.current ||
+      !displacementRef.current
+    ) {
+      return;
+    }
 
     killTimeline();
 
-    const decoEl = decoRef.current;
-    const labelEl = labelRef.current;
+    const deco = decoRef.current;
     const displacement = displacementRef.current;
     const turbulence = turbulenceRef.current;
-    const values = { scale: 0, freqY: 0.45 };
+    const values = { scale: 0, freqY: 0.55 };
 
-    decoEl.style.filter = `url(#${filterId})`;
-    if (distortText && labelEl) {
-      labelEl.style.filter = `url(#${filterId})`;
-    }
+    deco.style.filter = `url(#${filterId})`;
 
     const tl = gsap.timeline({
       onComplete: () => {
@@ -134,28 +127,28 @@ export default function DistortedLink(props: DistortedLinkProps) {
     tl.eventCallback("onUpdate", () => {
       displacement.scale.baseVal = values.scale;
       if (turbulence) {
-        turbulence.setAttribute("baseFrequency", `0.02 ${values.freqY}`);
+        turbulence.setAttribute("baseFrequency", `0.015 ${values.freqY}`);
       }
     });
 
     tl.fromTo(
       values,
-      { scale: 0, freqY: 0.75 },
+      { scale: 0, freqY: 0.85 },
       {
-        scale: distortText ? 14 : 12,
-        freqY: 0.28,
-        duration: 0.2,
+        scale: 10,
+        freqY: 0.35,
+        duration: 0.22,
         ease: "power2.out",
       },
     ).to(values, {
       scale: 0,
-      freqY: 0.45,
+      freqY: 0.55,
       duration: 0.55,
       ease: "power3.out",
     });
 
     timelineRef.current = tl;
-  }, [canDistort, distortText, filterId, killTimeline, resetFilterTargets]);
+  }, [canDistort, filterId, filtersReady, killTimeline, resetFilterTargets]);
 
   useEffect(() => () => killTimeline(), [killTimeline]);
 
@@ -171,7 +164,7 @@ export default function DistortedLink(props: DistortedLinkProps) {
 
   const decoClassName = [
     "distorted-link__deco",
-    `distorted-link__deco--${deco}`,
+    "distorted-link__deco--line",
     decoAlwaysVisible ? "distorted-link__deco--visible" : "",
   ]
     .filter(Boolean)
@@ -181,39 +174,43 @@ export default function DistortedLink(props: DistortedLinkProps) {
 
   const inner = (
     <>
-      <svg className="distorted-link__svg" aria-hidden focusable="false">
-        <defs>
-          <filter
-            id={filterId}
-            x="-40%"
-            y="-400%"
-            width="180%"
-            height="900%"
-            colorInterpolationFilters="sRGB"
-          >
-            <feTurbulence
-              ref={turbulenceRef}
-              type="fractalNoise"
-              baseFrequency="0.02 0.45"
-              numOctaves="2"
-              seed="3"
-              result="noise"
-            />
-            <feDisplacementMap
-              ref={displacementRef}
-              in="SourceGraphic"
-              in2="noise"
-              scale="0"
-              xChannelSelector="R"
-              yChannelSelector="G"
-            />
-          </filter>
-        </defs>
-      </svg>
-      <span ref={labelRef} className="distorted-link__label">
-        {children}
-      </span>
-      <span ref={decoRef} className={decoClassName} aria-hidden />
+      {filtersReady ? (
+        <svg
+          className="distorted-link__svg"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <defs>
+            <filter
+              id={filterId}
+              x="-20%"
+              y="-400%"
+              width="140%"
+              height="900%"
+              colorInterpolationFilters="sRGB"
+            >
+              <feTurbulence
+                ref={turbulenceRef}
+                type="fractalNoise"
+                baseFrequency="0.015 0.55"
+                numOctaves="2"
+                seed="3"
+                result="noise"
+              />
+              <feDisplacementMap
+                ref={displacementRef}
+                in="SourceGraphic"
+                in2="noise"
+                scale="0"
+                xChannelSelector="R"
+                yChannelSelector="G"
+              />
+            </filter>
+          </defs>
+        </svg>
+      ) : null}
+      <span className="distorted-link__label">{children}</span>
+      <span ref={decoRef} className={decoClassName} aria-hidden="true" />
     </>
   );
 

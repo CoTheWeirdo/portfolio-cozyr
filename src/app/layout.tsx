@@ -1,23 +1,25 @@
 import type { Metadata } from "next";
-import { Outfit, Syne } from "next/font/google";
+import { Figtree, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
-const syne = Syne({
-  variable: "--font-syne",
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
+  weight: "400",
+  style: ["normal", "italic"],
+  display: "swap",
 });
 
-const outfit = Outfit({
-  variable: "--font-outfit",
+const figtree = Figtree({
+  variable: "--font-figtree",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Nicole — Selected Works 2020—2026",
+  title: "张韵蕊（Yz香菜）— 音乐制作人 / 唱作人",
   description:
-    "Selected works across music, visual, and process — with distorted link effects.",
+    "张韵蕊（Yz香菜）的音乐作品、编曲作品与制作笔记。",
 };
 
 export default function RootLayout({
@@ -28,7 +30,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${syne.variable} ${outfit.variable} h-full antialiased`}
+      className={`${instrumentSerif.variable} ${figtree.variable} h-full antialiased`}
     >
       <body className="min-h-full">{children}</body>
     </html>
