@@ -134,7 +134,15 @@ export default function PortfolioWorks() {
 
   function startWorksDrag(event: PointerEvent<HTMLDivElement>) {
     if (event.pointerType === "mouse" && event.button !== 0) return;
-    if (event.target instanceof Element && event.target.closest("button, a")) return;
+    const eventTarget = event.target;
+    const targetElement =
+      eventTarget instanceof Element
+        ? eventTarget
+        : eventTarget instanceof Node
+          ? eventTarget.parentElement
+          : null;
+    // Never start a rail drag from the clip button (incl. text-node targets).
+    if (targetElement?.closest("button, a")) return;
     dragRef.current = { active: true, lastX: event.clientX, moved: false };
     worksRailPausedRef.current.interaction = true;
     setIsDraggingWorks(true);
@@ -262,7 +270,13 @@ export default function PortfolioWorks() {
               type="button"
               tabIndex={duplicate ? -1 : 0}
               aria-label={`${isTrackPlaying ? "Pause" : "Play"} ${work.label}${work.subtitle ?? ""} ${CLIP_DURATION_SEC}-second clip`}
-              onClick={() => toggleTrack(work.id, work.clip)}
+              onPointerDown={(event) => {
+                event.stopPropagation();
+              }}
+              onClick={(event) => {
+                event.stopPropagation();
+                void toggleTrack(work.id, work.clip);
+              }}
               onFocus={() => { worksRailPausedRef.current.focus = true; }}
               onBlur={() => { worksRailPausedRef.current.focus = false; }}
             >
@@ -316,9 +330,9 @@ export default function PortfolioWorks() {
       >
         <header className="section__head section__head--works">
           <span className="section__kicker">01 / 精选作品</span>
-          <h2 id="works-title" className="section__title section__title--cn section__title--center" aria-label="先听作品。">
+          <h2 id="works-title" className="section__title section__title--cn section__title--center" aria-label="传统音乐制作">
             {reduceMotion ? (
-              "先听作品。"
+              "传统音乐制作"
             ) : (
               <FuzzyText
                 className="page-fuzzy page-fuzzy--works"
@@ -334,7 +348,7 @@ export default function PortfolioWorks() {
                 direction="horizontal"
                 transitionDuration={8}
               >
-                先听作品。
+                传统音乐制作
               </FuzzyText>
             )}
           </h2>

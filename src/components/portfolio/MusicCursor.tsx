@@ -48,7 +48,8 @@ export default function MusicCursor() {
     const onOver = (event: MouseEvent) => {
       const target = event.target;
       if (!(target instanceof Element)) return;
-      hovering = Boolean(target.closest("a, button, [role='button'], .clip-button, .work__image"));
+      // Only real controls — not covers (avoids guitar cursor implying the art is the play hitbox).
+      hovering = Boolean(target.closest("a, button, [role='button'], .clip-button"));
       schedule();
     };
 

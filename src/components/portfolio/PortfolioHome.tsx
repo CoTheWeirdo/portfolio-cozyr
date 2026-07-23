@@ -450,7 +450,7 @@ export default function PortfolioHome() {
 
       <section id="works" className="section section--works" aria-labelledby="works-title">
         <header className="section__head"><span>01 / 精选作品</span><span>4 首原创 · 2 个编曲作品　横向浏览 →</span></header>
-        <h2 id="works-title" className="section__title section__title--cn">先听作品。</h2>
+        <h2 id="works-title" className="section__title section__title--cn">传统音乐制作</h2>
         <div
           ref={worksRailRef}
           className={`works-rail ${isDraggingWorks ? "works-rail--dragging" : ""}`}
