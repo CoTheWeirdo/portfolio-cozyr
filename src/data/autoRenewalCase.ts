@@ -40,7 +40,7 @@ export const autoRenewalCase = {
   englishTitle: "AUTOMATIC RENEWAL",
   cover: "/assets/works/auto-renewal/cover.png",
   coverAlt: "《自动续费》AI 音乐案例概念封面",
-  audio: "/audio/auto-renewal/final.wav",
+  audio: "/audio/auto-renewal/final.m4a",
   displayDuration: "02:29",
   oneLiner: [
     "把毕业后的求职焦虑，",
