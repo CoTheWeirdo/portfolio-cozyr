@@ -103,18 +103,32 @@ function useIsMobile(bp = 767) {
   return mobile;
 }
 
-/** Phone keep-list — secondary float words are omitted to reduce clutter */
-const MOBILE_KEEP_IDS = [
-  "logic",
-  "fl",
-  "ai",
-  "suno",
-  "arrange",
-  "produce",
-  "lyrics",
-  "sound",
-  "inspire",
-] as const;
+/**
+ * Phone-only decorative float layer — max 5 words, fixed positions.
+ * Safe of nav / name / body / CTAs / cat. Desktop NODES untouched.
+ */
+type MobileWord = {
+  id: string;
+  text: string;
+  x: number;
+  y: number;
+  opacity: number;
+  duration: number;
+  delay: number;
+};
+
+const MOBILE_WORDS: MobileWord[] = [
+  /* Below nav, right gutter — clear of brand + links */
+  { id: "logic", text: "Logic Pro", x: 80, y: 16, opacity: 0.26, duration: 10, delay: 0 },
+  /* Right of masthead / aka, above body copy */
+  { id: "fl", text: "FL Studio", x: 91, y: 28, opacity: 0.24, duration: 11.5, delay: 1.1 },
+  /* Below second pitch / near CTA row, far right — above cat */
+  { id: "ai", text: "AI Workflow", x: 86, y: 62, opacity: 0.2, duration: 12.5, delay: 0.5 },
+  /* Below CTA, left gutter */
+  { id: "suno", text: "Suno", x: 14, y: 78, opacity: 0.28, duration: 9, delay: 1.7 },
+  /* Above cat, left of guitar body */
+  { id: "inspire", text: "灵感", x: 28, y: 84, opacity: 0.16, duration: 13, delay: 0.35 },
+];
 
 export default function CreativeUniverse() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -330,30 +344,78 @@ export default function CreativeUniverse() {
     };
   }, [mobile, floatEnabled]);
 
-  if (mobile) {
-    const mobileNodes = NODES.filter((n) =>
-      (MOBILE_KEEP_IDS as readonly string[]).includes(n.id),
-    );
-    const mobileEntrance =
-      awaitingField
-        ? " field-map--await"
-        : revealingField
-          ? " field-map--reveal"
-          : "";
-    return (
-      <aside className={`field-map field-map--mobile${mobileEntrance}`} aria-hidden>
-        {mobileNodes.map((node, index) => {
+  const mobileEntrance =
+    awaitingField
+      ? " field-map--await"
+      : revealingField
+        ? " field-map--reveal"
+        : "";
+  const liveClass =
+    floatEnabled || (!awaitingField && !revealingField)
+      ? " mobile-floating-words--live"
+      : "";
+  const entranceClass = awaitingField
+    ? " field-map--await"
+    : revealingField
+      ? " field-map--reveal"
+      : "";
+
+  // Always render both layers — CSS toggles visibility by breakpoint
+  // (avoids hydration mismatch from JS media queries).
+  return (
+    <>
+      <aside
+        className={`field-map field-map--mobile mobile-floating-words${mobileEntrance}${liveClass}`}
+        aria-hidden
+      >
+        {MOBILE_WORDS.map((node, index) => (
+          <span
+            key={node.id}
+            className="mobile-floating-words__word field-word"
+            style={{
+              ["--x" as string]: `${node.x}%`,
+              ["--y" as string]: `${node.y}%`,
+              ["--delay" as string]: `${node.delay}s`,
+              ["--duration" as string]: `${node.duration}s`,
+              ["--word-opacity" as string]: String(node.opacity),
+              ["--enter-delay" as string]: `${0.05 + index * 0.07}s`,
+              ["--enter-opacity" as string]: String(node.opacity),
+            }}
+          >
+            {node.text}
+          </span>
+        ))}
+      </aside>
+
+      <aside
+        ref={rootRef}
+        className={`field-map field-map--desktop${entranceClass}`}
+        aria-hidden
+      >
+        {liveRef.current.map((node, index) => {
           const style = TIER[node.tier];
+          const coreOrder = ["logic", "fl", "suno", "ai"];
+          const enterDelay =
+            node.tier === "core"
+              ? 0.06 * Math.max(0, coreOrder.indexOf(node.id))
+              : 0.42 + index * 0.035;
           return (
             <span
               key={node.id}
+              ref={(el) => {
+                nodeRefs.current[index] = el;
+              }}
               className={`field-word field-word--${node.tier}`}
               style={{
+                left: `${node.x}%`,
+                top: `${node.y}%`,
+                fontSize: `clamp(${0.78 * style.size}rem, ${1.55 * style.size}vw, ${1.55 * style.size}rem)`,
+                fontWeight: style.weight,
                 opacity:
                   floatEnabled || (!awaitingField && !revealingField)
                     ? style.opacity
                     : undefined,
-                ["--enter-delay" as string]: `${0.05 + index * 0.06}s`,
+                ["--enter-delay" as string]: `${enterDelay}s`,
                 ["--enter-opacity" as string]: String(style.opacity),
               }}
             >
@@ -362,46 +424,6 @@ export default function CreativeUniverse() {
           );
         })}
       </aside>
-    );
-  }
-
-  const entranceClass = awaitingField
-    ? " field-map--await"
-    : revealingField
-      ? " field-map--reveal"
-      : "";
-
-  return (
-    <aside ref={rootRef} className={`field-map${entranceClass}`} aria-hidden>
-      {liveRef.current.map((node, index) => {
-        const style = TIER[node.tier];
-        // Cores first, then craft / soft / work staggered
-        const coreOrder = ["logic", "fl", "suno", "ai"];
-        const enterDelay =
-          node.tier === "core"
-            ? 0.06 * Math.max(0, coreOrder.indexOf(node.id))
-            : 0.42 + index * 0.035;
-        return (
-          <span
-            key={node.id}
-            ref={(el) => {
-              nodeRefs.current[index] = el;
-            }}
-            className={`field-word field-word--${node.tier}`}
-            style={{
-              left: `${node.x}%`,
-              top: `${node.y}%`,
-              fontSize: `clamp(${0.78 * style.size}rem, ${1.55 * style.size}vw, ${1.55 * style.size}rem)`,
-              fontWeight: style.weight,
-              opacity: floatEnabled || (!awaitingField && !revealingField) ? style.opacity : undefined,
-              ["--enter-delay" as string]: `${enterDelay}s`,
-              ["--enter-opacity" as string]: String(style.opacity),
-            }}
-          >
-            {node.text}
-          </span>
-        );
-      })}
-    </aside>
+    </>
   );
 }

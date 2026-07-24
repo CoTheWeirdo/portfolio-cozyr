@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import CreativeUniverse from "@/components/portfolio/CreativeUniverse";
@@ -11,6 +12,19 @@ import {
   REVEAL_DELAY,
   useIntro,
 } from "@/components/portfolio/IntroOrchestrator";
+
+/** Phone-only FuzzyText size — canvas measures fontSize at init. */
+function useIsPhone(bp = 767) {
+  const [phone, setPhone] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${bp}px)`);
+    const sync = () => setPhone(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, [bp]);
+  return phone;
+}
 
 const marqueeItems = [
   "作曲",
@@ -27,10 +41,14 @@ const ease = [0.22, 1, 0.36, 1] as const;
 
 function IntroStage() {
   const reduceMotion = useReducedMotion();
+  const isPhone = useIsPhone();
   const { reveal, playIntro, ready } = useIntro();
   const gate = ready && (reveal || !playIntro);
   const initial = reduceMotion || !playIntro ? false : "hidden";
   const animateTo = gate ? "show" : "hidden";
+  const nameFontSize = isPhone
+    ? "clamp(44px, 13vw, 60px)"
+    : "clamp(2.8rem, 7.5vw, 5.5rem)";
 
   const enter = {
     meta: {
@@ -166,7 +184,7 @@ function IntroStage() {
               ) : (
                 <FuzzyText
                   className="intro-stage__fuzzy"
-                  fontSize="clamp(2.8rem, 7.5vw, 5.5rem)"
+                  fontSize={nameFontSize}
                   fontWeight={700}
                   fontFamily='"Hiragino Sans GB", "PingFang SC", sans-serif'
                   color="#b9b4d8"

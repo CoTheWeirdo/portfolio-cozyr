@@ -10,7 +10,7 @@ export default function PortfolioProcess() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <PortfolioShell ferro="process">
+    <PortfolioShell className="portfolio--process" ferro="process">
       <section id="process" className="section section--dark" aria-labelledby="process-title">
         <header className="section__head">
           <span>02 / 创作现场</span>
