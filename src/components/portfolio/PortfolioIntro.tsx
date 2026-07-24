@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import CreativeUniverse from "@/components/portfolio/CreativeUniverse";
 import FuzzyText from "@/components/react-bits/FuzzyText";
@@ -25,12 +26,28 @@ const marqueeItems = [
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
+function useIsPhone(bp = 767) {
+  const [phone, setPhone] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${bp}px)`);
+    const update = () => setPhone(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, [bp]);
+  return phone;
+}
+
 function IntroStage() {
   const reduceMotion = useReducedMotion();
+  const isPhone = useIsPhone();
   const { reveal, playIntro, ready } = useIntro();
   const gate = ready && (reveal || !playIntro);
   const initial = reduceMotion || !playIntro ? false : "hidden";
   const animateTo = gate ? "show" : "hidden";
+  const titleFontSize = isPhone
+    ? "clamp(42px, 13vw, 62px)"
+    : "clamp(2.8rem, 7.5vw, 5.5rem)";
 
   const enter = {
     meta: {
@@ -166,7 +183,7 @@ function IntroStage() {
               ) : (
                 <FuzzyText
                   className="intro-stage__fuzzy"
-                  fontSize="clamp(2.8rem, 7.5vw, 5.5rem)"
+                  fontSize={titleFontSize}
                   fontWeight={700}
                   fontFamily='"Hiragino Sans GB", "PingFang SC", sans-serif'
                   color="#b9b4d8"

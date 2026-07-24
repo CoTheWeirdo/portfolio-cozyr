@@ -52,7 +52,7 @@ export default function PortfolioProcess() {
                 viewport={{ once: true, amount: 0.2 }}
               >
                 {index === 0 ? (
-                  <div className="process-shot__media process-shot__media--stack">
+                  <div className="process-shot__media process-shot__media--stack lyric-stack-mobile">
                     <div className="lyric-stack" aria-label="四张歌词创作过程截图占位">
                       {item.files.map((file, layerIndex) => (
                         <div className="lyric-stack__sheet" key={file}>
