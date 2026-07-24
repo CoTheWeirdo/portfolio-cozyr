@@ -1,17 +1,38 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+
+/** Tip offset so the glyph sits just past the real pointer (6–10px only). */
+const TIP = 8;
 
 export default function MusicCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const el = cursorRef.current;
-    if (!el) return;
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
 
     const finePointer = window.matchMedia("(pointer: fine)").matches;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!finePointer || reduceMotion) return;
+
+    const el = cursorRef.current;
+    if (!el) return;
+
+    // Confirm viewport-fixed portal mount.
+    const pos = getComputedStyle(el).position;
+    const parentOk = el.parentElement === document.body;
+    if (pos !== "fixed" || !parentOk) {
+      console.warn("[MusicCursor] expected fixed on document.body", {
+        position: pos,
+        parent: el.parentElement?.nodeName,
+      });
+    }
 
     document.documentElement.classList.add("has-music-cursor");
     el.hidden = false;
@@ -24,9 +45,12 @@ export default function MusicCursor() {
 
     const paint = () => {
       frame = 0;
-      el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-      el.classList.toggle("music-cursor--visible", visible);
-      el.classList.toggle("music-cursor--hover", hovering);
+      const node = cursorRef.current;
+      if (!node) return;
+      // Coords applied once via transform — left/top stay 0 in CSS.
+      node.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      node.classList.toggle("music-cursor--visible", visible);
+      node.classList.toggle("music-cursor--hover", hovering);
     };
 
     const schedule = () => {
@@ -34,8 +58,9 @@ export default function MusicCursor() {
     };
 
     const onMove = (event: MouseEvent) => {
-      x = event.clientX;
-      y = event.clientY;
+      // Viewport coords only — never pageX/pageY/scroll compensation.
+      x = event.clientX + TIP;
+      y = event.clientY + TIP;
       visible = true;
       schedule();
     };
@@ -53,22 +78,30 @@ export default function MusicCursor() {
       schedule();
     };
 
+    // pointermove is primary; mousemove covers environments that only emit mouse events.
+    window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("mousemove", onMove, { passive: true });
+    window.addEventListener("pointerover", onOver, { passive: true });
     window.addEventListener("mouseover", onOver, { passive: true });
     document.documentElement.addEventListener("mouseleave", onLeave);
 
     return () => {
       if (frame) cancelAnimationFrame(frame);
       document.documentElement.classList.remove("has-music-cursor");
+      window.removeEventListener("pointermove", onMove);
       window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("pointerover", onOver);
       window.removeEventListener("mouseover", onOver);
       document.documentElement.removeEventListener("mouseleave", onLeave);
     };
-  }, []);
+  }, [mounted]);
 
-  return (
+  if (!mounted || typeof document === "undefined") return null;
+
+  return createPortal(
     <div ref={cursorRef} className="music-cursor" aria-hidden hidden>
       <span className="music-cursor__glyph">🎸</span>
-    </div>
+    </div>,
+    document.body,
   );
 }

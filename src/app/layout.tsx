@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Figtree, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
@@ -20,6 +20,12 @@ export const metadata: Metadata = {
   title: "张韵蕊（Yz香菜）— 音乐制作人 / 唱作人",
   description:
     "张韵蕊（Yz香菜）的音乐作品、编曲作品与制作笔记。",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

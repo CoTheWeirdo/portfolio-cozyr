@@ -60,7 +60,7 @@ export default function PortfolioProcess() {
                             src={`/process/${file}`}
                             alt={`歌词创作草稿 ${layerIndex + 1}`}
                             fill
-                            sizes="(max-width: 760px) 70vw, 28vw"
+                            sizes="(max-width: 767px) 70vw, 28vw"
                           />
                           <span>LYRIC / {String(layerIndex + 1).padStart(2, "0")}</span>
                         </div>

@@ -67,6 +67,8 @@ export default function PortfolioWorks() {
     const rail = worksRailRef.current;
     const sequence = worksSequenceRef.current;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarsePointer = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+    const narrow = window.matchMedia("(max-width: 1023px)").matches;
     if (!rail || !sequence) return;
 
     const placeInMiddleCopy = () => {
@@ -101,7 +103,8 @@ export default function PortfolioWorks() {
 
     const visibilityObserver = new IntersectionObserver(([entry]) => {
       worksRailPausedRef.current.visible = entry.isIntersecting;
-      if (reduceMotion) return;
+      // Skip auto-scroll on touch / tablet — prefer snap swipe browsing
+      if (reduceMotion || coarsePointer || narrow) return;
 
       if (entry.isIntersecting && !frame) {
         frame = window.requestAnimationFrame(moveRail);
@@ -116,7 +119,7 @@ export default function PortfolioWorks() {
     visibilityObserver.observe(rail);
     rail.addEventListener("scroll", normalizeWorksRail, { passive: true });
 
-    if (reduceMotion) {
+    if (reduceMotion || coarsePointer || narrow) {
       return () => {
         resizeObserver.disconnect();
         visibilityObserver.disconnect();
@@ -250,7 +253,7 @@ export default function PortfolioWorks() {
           onMouseEnter={pauseRailForHover}
           onMouseLeave={resumeRailFromHover}
         >
-          <Image src={work.image} alt={duplicate ? "" : `${work.label} 封面`} fill sizes="(max-width: 760px) 68vw, 18vw" />
+          <Image src={work.image} alt={duplicate ? "" : `${work.label} 封面`} fill sizes="(max-width: 767px) 88vw, (max-width: 1023px) 42vw, 18vw" />
         </div>
         <div className="work__meta">
           <div>

@@ -91,7 +91,7 @@ function seed(): Live[] {
   });
 }
 
-function useIsMobile(bp = 760) {
+function useIsMobile(bp = 767) {
   const [mobile, setMobile] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia(`(max-width: ${bp}px)`);
@@ -102,6 +102,19 @@ function useIsMobile(bp = 760) {
   }, [bp]);
   return mobile;
 }
+
+/** Phone keep-list — secondary float words are omitted to reduce clutter */
+const MOBILE_KEEP_IDS = [
+  "logic",
+  "fl",
+  "ai",
+  "suno",
+  "arrange",
+  "produce",
+  "lyrics",
+  "sound",
+  "inspire",
+] as const;
 
 export default function CreativeUniverse() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -319,15 +332,35 @@ export default function CreativeUniverse() {
 
   if (mobile) {
     const mobileNodes = NODES.filter((n) =>
-      ["logic", "fl", "suno", "ai", "emotion", "melody", "arrange", "produce", "melt", "utopia"].includes(n.id),
+      (MOBILE_KEEP_IDS as readonly string[]).includes(n.id),
     );
+    const mobileEntrance =
+      awaitingField
+        ? " field-map--await"
+        : revealingField
+          ? " field-map--reveal"
+          : "";
     return (
-      <aside className="field-map field-map--mobile" aria-hidden>
-        {mobileNodes.map((node) => (
-          <span key={node.id} className={`field-word field-word--${node.tier}`}>
-            {node.text}
-          </span>
-        ))}
+      <aside className={`field-map field-map--mobile${mobileEntrance}`} aria-hidden>
+        {mobileNodes.map((node, index) => {
+          const style = TIER[node.tier];
+          return (
+            <span
+              key={node.id}
+              className={`field-word field-word--${node.tier}`}
+              style={{
+                opacity:
+                  floatEnabled || (!awaitingField && !revealingField)
+                    ? style.opacity
+                    : undefined,
+                ["--enter-delay" as string]: `${0.05 + index * 0.06}s`,
+                ["--enter-opacity" as string]: String(style.opacity),
+              }}
+            >
+              {node.text}
+            </span>
+          );
+        })}
       </aside>
     );
   }

@@ -149,6 +149,8 @@ export default function PortfolioHome() {
     const rail = worksRailRef.current;
     const sequence = worksSequenceRef.current;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarsePointer = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+    const narrow = window.matchMedia("(max-width: 1023px)").matches;
     if (!rail || !sequence) return;
 
     const placeInMiddleCopy = () => {
@@ -183,7 +185,7 @@ export default function PortfolioHome() {
 
     const visibilityObserver = new IntersectionObserver(([entry]) => {
       worksRailPausedRef.current.visible = entry.isIntersecting;
-      if (reduceMotion) return;
+      if (reduceMotion || coarsePointer || narrow) return;
 
       if (entry.isIntersecting && !frame) {
         frame = window.requestAnimationFrame(moveRail);
@@ -197,7 +199,7 @@ export default function PortfolioHome() {
     visibilityObserver.observe(rail);
     rail.addEventListener("scroll", normalizeWorksRail, { passive: true });
 
-    if (reduceMotion) {
+    if (reduceMotion || coarsePointer || narrow) {
       return () => {
         resizeObserver.disconnect();
         visibilityObserver.disconnect();
@@ -324,7 +326,7 @@ export default function PortfolioHome() {
           onMouseEnter={pauseRailForHover}
           onMouseLeave={resumeRailFromHover}
         >
-          <Image src={work.image} alt={duplicate ? "" : `${work.label} 封面`} fill sizes="(max-width: 760px) 68vw, 18vw" />
+          <Image src={work.image} alt={duplicate ? "" : `${work.label} 封面`} fill sizes="(max-width: 767px) 88vw, (max-width: 1023px) 42vw, 18vw" />
         </div>
         <div className="work__meta">
           <div>
@@ -499,7 +501,7 @@ export default function PortfolioHome() {
                             src={`/process/${file}`}
                             alt={`歌词创作草稿 ${layerIndex + 1}`}
                             fill
-                            sizes="(max-width: 760px) 70vw, 28vw"
+                            sizes="(max-width: 767px) 70vw, 28vw"
                           />
                           <span>LYRIC / {String(layerIndex + 1).padStart(2, "0")}</span>
                         </div>
