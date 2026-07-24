@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import FerroBackdrop, { type FerroScene } from "@/components/portfolio/FerroBackdrop";
 import MusicCursor from "@/components/portfolio/MusicCursor";
+import PortfolioFooter from "@/components/portfolio/PortfolioFooter";
 import PortfolioNav from "@/components/portfolio/PortfolioNav";
 
 type PortfolioShellProps = {
@@ -27,6 +28,7 @@ export default function PortfolioShell({
       {ferro ? <FerroBackdrop scene={ferro} /> : null}
       <PortfolioNav />
       <div className="portfolio__content">{children}</div>
+      <PortfolioFooter />
     </main>
   );
 }

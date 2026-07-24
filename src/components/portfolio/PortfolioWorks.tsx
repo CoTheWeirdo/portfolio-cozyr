@@ -5,7 +5,12 @@ import { motion, useReducedMotion } from "framer-motion";
 import { type CSSProperties, type PointerEvent, useCallback, useEffect, useRef, useState } from "react";
 import FuzzyText from "@/components/react-bits/FuzzyText";
 import PortfolioShell from "@/components/portfolio/PortfolioShell";
-import { CLIP_DURATION_SEC, hexToRgb, works } from "@/data/portfolioContent";
+import SoundToSignalBridge from "@/components/portfolio/SoundToSignalBridge";
+import AiLabSection from "@/components/portfolio/AiLabSection";
+import MusicEvalSystem from "@/components/portfolio/MusicEvalSystem";
+import { CLIP_DURATION_SEC, aiWorks, hexToRgb, works } from "@/data/portfolioContent";
+
+type TrackId = number | string;
 
 export default function PortfolioWorks() {
   const reduceMotion = useReducedMotion();
@@ -15,13 +20,14 @@ export default function PortfolioWorks() {
   const worksRailPausedRef = useRef({ hover: false, interaction: false, focus: false, visible: false });
   const clipHoverCountRef = useRef(0);
   const dragRef = useRef({ active: false, lastX: 0, moved: false });
-  const [activeTrack, setActiveTrack] = useState<number | null>(null);
+  const [activeTrack, setActiveTrack] = useState<TrackId | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [clipProgress, setClipProgress] = useState(0);
-  const [audioMissing, setAudioMissing] = useState<number | null>(null);
+  const [audioMissing, setAudioMissing] = useState<TrackId | null>(null);
   const [isDraggingWorks, setIsDraggingWorks] = useState(false);
   const playingTrack = isPlaying ? activeTrack : null;
-  const activeWork = playingTrack === null ? null : works.find((work) => work.id === playingTrack);
+  const activeWork =
+    typeof playingTrack === "number" ? works.find((work) => work.id === playingTrack) : null;
 
   const syncClipProgress = useCallback((audio: HTMLAudioElement) => {
     const next = audio.currentTime / CLIP_DURATION_SEC;
@@ -56,7 +62,7 @@ export default function PortfolioWorks() {
     const loopDistance = sequence.offsetWidth;
     if (!loopDistance) return;
 
-    if (rail.scrollLeft < loopDistance * .5) {
+    if (rail.scrollLeft < loopDistance * 0.5) {
       rail.scrollLeft += loopDistance;
     } else if (rail.scrollLeft >= loopDistance * 1.5) {
       rail.scrollLeft -= loopDistance;
@@ -66,10 +72,16 @@ export default function PortfolioWorks() {
   useEffect(() => {
     const rail = worksRailRef.current;
     const sequence = worksSequenceRef.current;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const coarsePointer = window.matchMedia("(hover: none), (pointer: coarse)").matches;
-    const narrow = window.matchMedia("(max-width: 1023px)").matches;
     if (!rail || !sequence) return;
+
+    const reduceMq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    // Touch / phone-like pointers only — avoid (hover: none) which some desktops trip.
+    const coarseMq = window.matchMedia("(pointer: coarse)");
+    // Must stay aligned with scroll-snap breakpoint in globals.css (max-width: 1023px).
+    const narrowMq = window.matchMedia("(max-width: 1023px)");
+
+    const canAutoScroll = () =>
+      !reduceMq.matches && !coarseMq.matches && !narrowMq.matches;
 
     const placeInMiddleCopy = () => {
       const loopDistance = sequence.offsetWidth;
@@ -77,61 +89,102 @@ export default function PortfolioWorks() {
     };
 
     placeInMiddleCopy();
-    const resizeObserver = new ResizeObserver(placeInMiddleCopy);
+
+    // Only re-center when loop WIDTH changes (not height from image load).
+    let lastLoopWidth = sequence.offsetWidth;
+    const resizeObserver = new ResizeObserver(() => {
+      const loopDistance = sequence.offsetWidth;
+      if (!loopDistance || loopDistance === lastLoopWidth) return;
+      lastLoopWidth = loopDistance;
+      rail.scrollLeft = loopDistance;
+    });
+
     let frame = 0;
     let previousTime = 0;
+    let running = false;
+
+    const isNearViewport = () => {
+      const rect = rail.getBoundingClientRect();
+      return rect.bottom > -240 && rect.top < window.innerHeight + 240;
+    };
 
     const moveRail = (time: number) => {
-      frame = 0;
-      if (!worksRailPausedRef.current.visible) {
+      if (!running) {
+        frame = 0;
+        return;
+      }
+      frame = window.requestAnimationFrame(moveRail);
+
+      if (!canAutoScroll()) {
+        previousTime = 0;
+        return;
+      }
+
+      // Fresh visibility each frame — never depend on a stale IO flag alone.
+      const near = isNearViewport();
+      worksRailPausedRef.current.visible = near;
+      if (!near) {
+        previousTime = 0;
+        return;
+      }
+
+      const pauseState = worksRailPausedRef.current;
+      if (pauseState.hover || pauseState.interaction || pauseState.focus) {
         previousTime = 0;
         return;
       }
 
       if (!previousTime) previousTime = time;
       const elapsed = Math.min(time - previousTime, 40);
-      const pauseState = worksRailPausedRef.current;
-
-      if (!pauseState.hover && !pauseState.interaction && !pauseState.focus) {
-        rail.scrollLeft += elapsed * .042;
-        normalizeWorksRail();
-      }
-
+      rail.scrollLeft += elapsed * 0.042;
+      normalizeWorksRail();
       previousTime = time;
-      frame = window.requestAnimationFrame(moveRail);
     };
 
-    const visibilityObserver = new IntersectionObserver(([entry]) => {
-      worksRailPausedRef.current.visible = entry.isIntersecting;
-      // Skip auto-scroll on touch / tablet — prefer snap swipe browsing
-      if (reduceMotion || coarsePointer || narrow) return;
+    const startLoop = () => {
+      if (running) return;
+      running = true;
+      previousTime = 0;
+      if (!frame) frame = window.requestAnimationFrame(moveRail);
+    };
 
-      if (entry.isIntersecting && !frame) {
-        frame = window.requestAnimationFrame(moveRail);
-      } else if (!entry.isIntersecting && frame) {
+    const stopLoop = () => {
+      running = false;
+      previousTime = 0;
+      if (frame) {
         window.cancelAnimationFrame(frame);
         frame = 0;
-        previousTime = 0;
       }
-    }, { rootMargin: "160px 0px" });
+    };
+
+    // Clear sticky hover if DOM remounts while the pointer is over a cover.
+    const clearHoverPause = () => {
+      clipHoverCountRef.current = 0;
+      worksRailPausedRef.current.hover = false;
+    };
 
     resizeObserver.observe(sequence);
-    visibilityObserver.observe(rail);
     rail.addEventListener("scroll", normalizeWorksRail, { passive: true });
+    rail.addEventListener("pointerleave", clearHoverPause);
+    worksRailPausedRef.current.visible = isNearViewport();
+    startLoop();
 
-    if (reduceMotion || coarsePointer || narrow) {
-      return () => {
-        resizeObserver.disconnect();
-        visibilityObserver.disconnect();
-        rail.removeEventListener("scroll", normalizeWorksRail);
-      };
-    }
+    const onMq = () => {
+      if (canAutoScroll()) startLoop();
+      // Keep RAF alive; moveRail no-ops while gated.
+    };
+    reduceMq.addEventListener("change", onMq);
+    coarseMq.addEventListener("change", onMq);
+    narrowMq.addEventListener("change", onMq);
 
     return () => {
-      if (frame) window.cancelAnimationFrame(frame);
+      stopLoop();
       resizeObserver.disconnect();
-      visibilityObserver.disconnect();
       rail.removeEventListener("scroll", normalizeWorksRail);
+      rail.removeEventListener("pointerleave", clearHoverPause);
+      reduceMq.removeEventListener("change", onMq);
+      coarseMq.removeEventListener("change", onMq);
+      narrowMq.removeEventListener("change", onMq);
     };
   }, [normalizeWorksRail]);
 
@@ -174,7 +227,7 @@ export default function PortfolioWorks() {
     }
   }
 
-  async function toggleTrack(id: number, clip: string) {
+  async function toggleTrack(id: TrackId, clip: string) {
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -245,7 +298,7 @@ export default function PortfolioWorks() {
         style={workGlowStyle}
         initial={duplicate ? false : { opacity: 0, y: 30 }}
         whileInView={duplicate ? undefined : { opacity: 1, y: 0 }}
-        viewport={duplicate ? undefined : { once: true, amount: .2 }}
+        viewport={duplicate ? undefined : { once: true, amount: 0.2 }}
         aria-hidden={duplicate || undefined}
       >
         <div
@@ -253,7 +306,12 @@ export default function PortfolioWorks() {
           onMouseEnter={pauseRailForHover}
           onMouseLeave={resumeRailFromHover}
         >
-          <Image src={work.image} alt={duplicate ? "" : `${work.label} 封面`} fill sizes="(max-width: 767px) 88vw, (max-width: 1023px) 42vw, 18vw" />
+          <Image
+            src={work.image}
+            alt={duplicate ? "" : `${work.label} 封面`}
+            fill
+            sizes="(max-width: 767px) 84vw, (max-width: 1023px) 42vw, 18vw"
+          />
         </div>
         <div className="work__meta">
           <div>
@@ -262,6 +320,12 @@ export default function PortfolioWorks() {
               {work.subtitle ? <span className="work__name-detail">{work.subtitle}</span> : null}
             </span>
             <span className="work__note">{work.type}</span>
+            {work.roles?.length ? (
+              <span className="work__roles">{work.roles.join(" / ")}</span>
+            ) : null}
+            {work.musicTags?.length ? (
+              <span className="work__tags">{work.musicTags.join(" · ")}</span>
+            ) : null}
           </div>
           <div
             className="clip-control"
@@ -280,10 +344,16 @@ export default function PortfolioWorks() {
                 event.stopPropagation();
                 void toggleTrack(work.id, work.clip);
               }}
-              onFocus={() => { worksRailPausedRef.current.focus = true; }}
-              onBlur={() => { worksRailPausedRef.current.focus = false; }}
+              onFocus={() => {
+                worksRailPausedRef.current.focus = true;
+              }}
+              onBlur={() => {
+                worksRailPausedRef.current.focus = false;
+              }}
             >
-              <span className="clip-button__icon" aria-hidden>{isTrackPlaying ? "Ⅱ" : "▶"}</span>
+              <span className="clip-button__icon" aria-hidden>
+                {isTrackPlaying ? "Ⅱ" : "▶"}
+              </span>
               <span>{isTrackPlaying ? "播放中" : "试听片段"}</span>
               <span className="clip-button__time">
                 {isTrackActive
@@ -296,7 +366,9 @@ export default function PortfolioWorks() {
             </span>
           </div>
         </div>
-        {audioMissing === work.id && !duplicate ? <p className="clip-missing">试听暂时未加载，请刷新页面后再试。</p> : null}
+        {audioMissing === work.id && !duplicate ? (
+          <p className="clip-missing">试听暂时未加载，请刷新页面后再试。</p>
+        ) : null}
       </motion.article>
     );
   }
@@ -323,49 +395,89 @@ export default function PortfolioWorks() {
         onTimeUpdate={(event) => syncClipProgress(event.currentTarget)}
       />
 
+      {/* ——— Hero ——— */}
       <motion.section
-        id="works"
-        className="section section--works section--works-page"
+        className="works-hero"
         aria-labelledby="works-title"
-        initial={{ opacity: 0, y: 24 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.65, delay: 0.1, ease: [0.2, 0.8, 0.2, 1] }}
+        transition={{ duration: 0.65, delay: 0.08, ease: [0.2, 0.8, 0.2, 1] }}
       >
-        <header className="section__head section__head--works">
-          <span className="section__kicker">01 / 精选作品</span>
-          <h2 id="works-title" className="section__title section__title--cn section__title--center" aria-label="传统音乐制作">
-            {reduceMotion ? (
-              "传统音乐制作"
-            ) : (
-              <FuzzyText
-                className="page-fuzzy page-fuzzy--works"
-                fontSize="clamp(2.25rem, 4.4vw, 4.5rem)"
-                fontWeight={600}
-                fontFamily='"Hiragino Sans GB", "PingFang SC", sans-serif'
-                color="#ede9df"
-                baseIntensity={0.14}
-                hoverIntensity={0.45}
-                enableHover
-                fuzzRange={22}
-                fps={42}
-                direction="horizontal"
-                transitionDuration={8}
-              >
-                传统音乐制作
-              </FuzzyText>
-            )}
+        <span className="works-hero__kicker">02 / 音乐生产系统</span>
+        <h1 id="works-title" className="works-hero__title" aria-label="从 DAW 到模型">
+          {reduceMotion ? (
+            <span className="works-hero__title-text">从 DAW 到模型</span>
+          ) : (
+            <FuzzyText
+              className="page-fuzzy page-fuzzy--works"
+              fontSize="clamp(2.25rem, 5vw, 4.6rem)"
+              fontWeight={600}
+              fontFamily='"Hiragino Sans GB", "PingFang SC", sans-serif'
+              color="#ede9df"
+              baseIntensity={0.14}
+              hoverIntensity={0.45}
+              enableHover
+              fuzzRange={22}
+              fps={42}
+              direction="horizontal"
+              transitionDuration={8}
+            >
+              从 DAW 到模型
+            </FuzzyText>
+          )}
+        </h1>
+        <p className="works-hero__en" aria-hidden>
+          FROM DAW TO MODEL
+        </p>
+        <p className="works-hero__sub">独立制作 × AI 音乐工作流</p>
+        <p className="works-hero__lead">
+          我先用耳朵和 DAW 完成作品，
+          <br />
+          再把审美判断拆成标签、对比与迭代。
+        </p>
+      </motion.section>
+
+      {/* ——— 01 Human-led + preserved rail ——— */}
+      <section className="works-human section section--works" aria-labelledby="works-human-title">
+        <header className="works-chapter-head works-chapter-head--human">
+          <div className="works-chapter-head__row">
+            <span className="works-chapter-head__index">01 / 独立制作</span>
+            <span className="works-chapter-head__en" aria-hidden>
+              HUMAN-LED
+              <br />
+              PRODUCTION
+            </span>
+          </div>
+          <h2 id="works-human-title" className="works-chapter-head__title">
+            完整主导一首作品的生成
           </h2>
-          <p className="section__sub">4 首原创 · 2 个编曲作品 · 横向浏览 →</p>
+          <p className="works-chapter-head__lead">
+            从旋律、编曲到人声与混音，
+            <br className="works-bridge__br" />
+            完整主导一首作品的生成过程。
+          </p>
         </header>
-        <p className="works-tune-in" aria-hidden>TUNING IN</p>
+
+        <p className="works-tune-in" aria-hidden>
+          TUNING IN
+        </p>
         <div
           ref={worksRailRef}
           className={`works-rail ${isDraggingWorks ? "works-rail--dragging" : ""}`}
-          aria-label="可左右拖动、无限循环展示六个音乐作品，鼠标移入封面或试听片段时暂停"
+          aria-label="可左右拖动、无限循环展示六个音乐作品，鼠标移入封面或试听时暂停"
           onPointerDown={startWorksDrag}
           onPointerMove={moveWorksDrag}
           onPointerUp={finishWorksDrag}
           onPointerCancel={finishWorksDrag}
+          onPointerLeave={() => {
+            clipHoverCountRef.current = 0;
+            worksRailPausedRef.current.hover = false;
+            if (dragRef.current.active) {
+              dragRef.current.active = false;
+              worksRailPausedRef.current.interaction = false;
+              setIsDraggingWorks(false);
+            }
+          }}
         >
           <div className="works-track">
             <div className="works-sequence" aria-hidden="true">
@@ -379,7 +491,21 @@ export default function PortfolioWorks() {
             </div>
           </div>
         </div>
-      </motion.section>
+      </section>
+
+      <SoundToSignalBridge />
+
+      <AiLabSection
+        items={aiWorks}
+        activeTrack={typeof activeTrack === "string" ? activeTrack : null}
+        isPlaying={isPlaying}
+        clipProgress={clipProgress}
+        onToggle={(id, clip) => {
+          void toggleTrack(id, clip);
+        }}
+      />
+
+      <MusicEvalSystem />
     </PortfolioShell>
   );
 }
