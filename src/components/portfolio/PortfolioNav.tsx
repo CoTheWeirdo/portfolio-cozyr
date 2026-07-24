@@ -46,7 +46,7 @@ export default function PortfolioNav() {
       <Link className="nav__brand" href="/" aria-label="Yz香菜，回到首页">
         <span className="nav__brand-yz">Yz</span>
         <span className="nav__brand-cn">香菜</span>
-        <span className="nav__brand-dot" aria-hidden />
+        <span className="nav__brand-dot" aria-hidden="true" />
       </Link>
       <div className="nav__links">
         {links.map((link) => (

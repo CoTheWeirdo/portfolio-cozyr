@@ -32,8 +32,8 @@ export const processChapters: readonly ProcessChapterMeta[] = [
   },
   {
     index: "03",
-    title: "声音搭建",
-    englishTitle: "SOUND CONSTRUCTION",
+    title: "声音决策",
+    englishTitle: "SOUND DECISIONS",
     subtitle: "让情绪拥有空间和重量",
     description:
       "旋律确定方向，编曲决定距离；声音的密度、位置与进入时机，共同塑造听感。",
@@ -78,17 +78,27 @@ export type SoundLayer = {
 };
 
 export const soundLayers: readonly SoundLayer[] = [
-  { label: "VOICE", description: "" },
-  { label: "CHORD", description: "" },
-  { label: "BASS", description: "" },
-  { label: "TEXTURE", description: "" },
-  { label: "RHYTHM", description: "" },
+  { label: "VOICE", description: "人声承担叙事重心" },
+  { label: "CHORD", description: "和声保留呼吸空间" },
+  { label: "BASS", description: "低频控制重量与推进" },
+  { label: "TEXTURE", description: "声音质感塑造距离与环境" },
+  { label: "RHYTHM", description: "节奏决定能量释放的时机" },
 ];
 
-export const decisionAxes = ["OBSERVATION", "KEPT", "REMOVED", "FINAL DECISION"] as const;
-
-export const decisionStages = [
-  { id: "demo-01", label: "DEMO 01", emphasis: "low" as const },
-  { id: "demo-02", label: "DEMO 02", emphasis: "low" as const },
-  { id: "final", label: "FINAL", emphasis: "high" as const },
-];
+export const decisionPrinciples = [
+  {
+    index: "01",
+    title: "情绪时机",
+    question: "情绪是否在正确的段落释放？",
+  },
+  {
+    index: "02",
+    title: "记忆点",
+    question: "Hook 是否足够清晰，同时没有过度堆叠？",
+  },
+  {
+    index: "03",
+    title: "存在理由",
+    question: "每一个声音是否真正推动了作品？",
+  },
+] as const;

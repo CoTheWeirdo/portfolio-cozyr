@@ -8,13 +8,14 @@ import PortfolioShell from "@/components/portfolio/PortfolioShell";
 import SoundToSignalBridge from "@/components/portfolio/SoundToSignalBridge";
 import AiLabSection from "@/components/portfolio/AiLabSection";
 import MusicEvalSystem from "@/components/portfolio/MusicEvalSystem";
-import { CLIP_DURATION_SEC, aiWorks, hexToRgb, works } from "@/data/portfolioContent";
+import { CLIP_DURATION_SEC, hexToRgb, works } from "@/data/portfolioContent";
 
-type TrackId = number | string;
+type TrackId = number;
 
 export default function PortfolioWorks() {
   const reduceMotion = useReducedMotion();
   const audioRef = useRef<HTMLAudioElement>(null);
+  const pauseCaseAudioRef = useRef<(() => void) | null>(null);
   const worksRailRef = useRef<HTMLDivElement>(null);
   const worksSequenceRef = useRef<HTMLDivElement>(null);
   const worksRailPausedRef = useRef({ hover: false, interaction: false, focus: false, visible: false });
@@ -230,6 +231,8 @@ export default function PortfolioWorks() {
   async function toggleTrack(id: TrackId, clip: string) {
     const audio = audioRef.current;
     if (!audio) return;
+
+    pauseCaseAudioRef.current?.();
 
     if (activeTrack === id) {
       if (!audio.paused) {
@@ -496,12 +499,15 @@ export default function PortfolioWorks() {
       <SoundToSignalBridge />
 
       <AiLabSection
-        items={aiWorks}
-        activeTrack={typeof activeTrack === "string" ? activeTrack : null}
-        isPlaying={isPlaying}
-        clipProgress={clipProgress}
-        onToggle={(id, clip) => {
-          void toggleTrack(id, clip);
+        onRegisterPause={(pause) => {
+          pauseCaseAudioRef.current = pause;
+        }}
+        onPlayStart={() => {
+          const audio = audioRef.current;
+          if (audio && !audio.paused) {
+            audio.pause();
+            setIsPlaying(false);
+          }
         }}
       />
 

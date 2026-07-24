@@ -1,10 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { musicEvalDimensions } from "@/data/portfolioContent";
+import { motion, useReducedMotion } from "framer-motion";
+import { autoRenewalEvalDimensions } from "@/data/autoRenewalCase";
 
 export default function MusicEvalSystem() {
-  const [active, setActive] = useState<string>(musicEvalDimensions[0].id);
+  const reduceMotion = useReducedMotion();
+  const fade = reduceMotion
+    ? undefined
+    : {
+        initial: { opacity: 0, y: 18 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, amount: 0.18 },
+        transition: { duration: 0.55, ease: [0.2, 0.8, 0.2, 1] as const },
+      };
 
   return (
     <section className="works-eval" aria-labelledby="works-eval-title">
@@ -21,33 +29,37 @@ export default function MusicEvalSystem() {
           把“好不好听”，拆成可描述的判断
         </h2>
         <p className="works-chapter-head__lead">
-          我尝试把听感进一步拆成可描述、可讨论、可复用的判断维度。
+          我尝试把“好不好听”，
+          <br className="works-bridge__br" />
+          拆成可描述、可比较、可复用的判断维度。
+        </p>
+        <p className="works-eval__origin">
+          这套框架来自《自动续费》的六版生成与筛选经验，不是一套脱离案例的通用模板。
         </p>
       </header>
 
-      <ul className="works-eval__grid" role="list">
-        {musicEvalDimensions.map((dim) => {
-          const isActive = active === dim.id;
-          return (
-            <li key={dim.id}>
-              <button
-                type="button"
-                className={`works-eval__card${isActive ? " works-eval__card--active" : ""}`}
-                aria-pressed={isActive}
-                onClick={() => setActive(dim.id)}
-                onMouseEnter={() => setActive(dim.id)}
-                onFocus={() => setActive(dim.id)}
-              >
-                <span className="works-eval__num" aria-hidden>
-                  {dim.index}
-                </span>
-                <span className="works-eval__name">{dim.title}</span>
-                <span className="works-eval__body">{dim.body}</span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      <motion.ol className="works-eval__manual" {...(fade ?? {})}>
+        {autoRenewalEvalDimensions.map((dim) => (
+          <li key={dim.id} className="works-eval__row">
+            <span className="works-eval__num" aria-hidden>
+              {dim.index}
+            </span>
+            <div className="works-eval__titles">
+              <span className="works-eval__name">{dim.title}</span>
+              <span className="works-eval__en" aria-hidden>
+                {dim.englishTitle}
+              </span>
+            </div>
+            <div className="works-eval__copy">
+              <p>{dim.body}</p>
+              <p className="works-eval__evidence">
+                <span>案例证据</span>
+                {dim.evidence}
+              </p>
+            </div>
+          </li>
+        ))}
+      </motion.ol>
     </section>
   );
 }

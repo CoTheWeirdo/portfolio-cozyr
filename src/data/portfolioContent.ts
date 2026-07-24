@@ -94,8 +94,8 @@ export const works: readonly WorkItem[] = [
 ];
 
 /**
- * AI-assisted lab entries — only populate when real audio / notes exist.
- * Currently empty: no fabricated prompts, versions, or scores.
+ * AI-assisted lab entries — reserved for lightweight catalogue cards.
+ * Full case studies live in `autoRenewalCase.ts`.
  */
 export type AiWorkItem = {
   id: string;
@@ -117,7 +117,6 @@ export type AiWorkItem = {
     styleMatch?: string;
   };
   finalDecision?: string;
-  /** Optional A/B pair — only when two real versions exist */
   abCompare?: {
     a: { label: string; audio: string };
     b: { label: string; audio: string };
@@ -125,39 +124,6 @@ export type AiWorkItem = {
 };
 
 export const aiWorks: readonly AiWorkItem[] = [];
-
-export const musicEvalDimensions = [
-  {
-    id: "musicality",
-    index: "01",
-    title: "音乐性",
-    body: "旋律是否成立，和声、节奏与编曲是否自然。",
-  },
-  {
-    id: "style",
-    index: "02",
-    title: "风格一致性",
-    body: "作品是否符合目标曲风、时代感与受众预期。",
-  },
-  {
-    id: "vocal",
-    index: "03",
-    title: "人声表现",
-    body: "音色、咬字、音高、情绪与语言自然度是否可信。",
-  },
-  {
-    id: "structure",
-    index: "04",
-    title: "结构与记忆点",
-    body: "段落推进是否完整，Hook 是否具有辨识度。",
-  },
-  {
-    id: "usability",
-    index: "05",
-    title: "内容可用性",
-    body: "输出是否适合继续编辑、发布、标注或进入下一轮迭代。",
-  },
-] as const;
 
 export const processEvidence = [
   {

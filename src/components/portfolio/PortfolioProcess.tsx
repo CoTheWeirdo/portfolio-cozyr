@@ -7,8 +7,7 @@ import ProcessAnatomyHero from "@/components/portfolio/ProcessAnatomyHero";
 import ProcessChapter from "@/components/portfolio/ProcessChapter";
 import { processEvidence } from "@/data/portfolioContent";
 import {
-  decisionAxes,
-  decisionStages,
+  decisionPrinciples,
   emotionalTags,
   lyricEditRecords,
   processChapters,
@@ -19,7 +18,6 @@ import {
 export default function PortfolioProcess() {
   const reduceMotion = useReducedMotion();
   const lyricEvidence = processEvidence[0];
-  const soundEvidence = processEvidence.slice(1);
   const [sourceMeta, lyricsMeta, soundMeta, decisionMeta] = processChapters;
 
   return (
@@ -100,12 +98,13 @@ export default function PortfolioProcess() {
                     ))}
                   </div>
                 </div>
-                <figcaption>
-                  <span>02</span>
-                  <div>
-                    <h3>{lyricEvidence.title}</h3>
-                    <p>{lyricEvidence.note}</p>
-                  </div>
+                <figcaption className="process-lyrics__caption">
+                  <span className="process-lyrics__tag">LYRIC ARCHIVE / 05 DRAFTS</span>
+                  <p>
+                    五段不同时期的歌词记录：
+                    <br />
+                    从一句灵感，到逐渐成形的段落。
+                  </p>
                 </figcaption>
               </motion.figure>
 
@@ -154,67 +153,45 @@ export default function PortfolioProcess() {
           </div>
         </ProcessChapter>
 
-        {/* ——— 03 Sound construction ——— */}
+        {/* ——— 03 Sound decisions ——— */}
         <ProcessChapter meta={soundMeta}>
           <div className="process-sound">
-            <div className="process-sound__gallery">
-              {soundEvidence.map((item, index) => (
-                <motion.figure
-                  className={`process-shot process-shot--${index + 2}`}
-                  key={item.title}
-                  initial={reduceMotion ? false : { opacity: 0, y: 24 }}
-                  whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                >
-                  <div className="process-shot__media process-sound__media">
-                    <span className="process-sound__overlay" aria-hidden="true" />
-                    <span>IMAGE / {String(index + 2).padStart(2, "0")}</span>
-                    <strong>{item.title}</strong>
-                    <small>稍后替换为 {item.files[0]}</small>
+            <div className="process-sound__diagram" aria-label="声音决策方法示意图：VOICE、CHORD、BASS、TEXTURE、RHYTHM">
+              <p className="process-sound__diagram-label" aria-hidden="true">
+                METHOD MAP · NOT A DAW SCREENSHOT
+              </p>
+              <div className="process-sound__rails" aria-hidden="true">
+                {soundLayers.map((layer) => (
+                  <div key={layer.label} className="process-sound__rail">
+                    <span className="process-sound__rail-label">{layer.label}</span>
+                    <span className="process-sound__rail-track">
+                      <span className="process-sound__rail-fill" />
+                    </span>
+                    <span className="process-sound__rail-copy">{layer.description}</span>
                   </div>
-                  <figcaption>
-                    <span>{String(index + 2).padStart(2, "0")}</span>
-                    <div>
-                      <h3>{item.title}</h3>
-                      <p>{item.note}</p>
-                    </div>
-                  </figcaption>
-                </motion.figure>
-              ))}
+                ))}
+                <span className="process-sound__playhead" />
+              </div>
+              <ul className="process-sound__sr-only">
+                {soundLayers.map((layer) => (
+                  <li key={layer.label}>
+                    {layer.label}：{layer.description}
+                  </li>
+                ))}
+              </ul>
             </div>
-
-            <ul className="process-sound__layers" aria-label="声音层级">
-              {soundLayers.map((layer) => (
-                <li key={layer.label} className="process-sound__layer">
-                  <span>{layer.label}</span>
-                  <span className="process-sound__layer-rule" />
-                  {layer.description ? <p>{layer.description}</p> : null}
-                </li>
-              ))}
-            </ul>
           </div>
         </ProcessChapter>
 
-        {/* ——— 04 Decision log ——— */}
+        {/* ——— 04 Decision principles ——— */}
         <ProcessChapter meta={decisionMeta}>
           <div className="process-decision">
-            <div className="process-decision__stages" aria-label="版本决策框架">
-              {decisionStages.map((stage) => (
-                <article
-                  key={stage.id}
-                  className={`process-decision__stage process-decision__stage--${stage.emphasis}`}
-                >
-                  <header>
-                    <span>{stage.label}</span>
-                  </header>
-                  <ul className="process-decision__axes">
-                    {decisionAxes.map((axis) => (
-                      <li key={`${stage.id}-${axis}`}>
-                        <span>{axis}</span>
-                        <span className="process-decision__axis-rule" />
-                      </li>
-                    ))}
-                  </ul>
+            <div className="process-decision__principles" aria-label="选择原则">
+              {decisionPrinciples.map((principle) => (
+                <article key={principle.index} className="process-decision__principle">
+                  <span className="process-decision__principle-index">{principle.index} /</span>
+                  <h3 className="process-decision__principle-title">{principle.title}</h3>
+                  <p className="process-decision__principle-q">{principle.question}</p>
                 </article>
               ))}
             </div>

@@ -9,7 +9,7 @@ type ProcessAnatomyHeroProps = {
 const CHAPTERS = [
   "01  情绪采样",
   "02  语言与结构",
-  "03  声音搭建",
+  "03  声音决策",
   "04  选择与淘汰",
 ] as const;
 
@@ -31,7 +31,7 @@ export default function ProcessAnatomyHero({ reduceMotion }: ProcessAnatomyHeroP
             ) : (
               <FuzzyText
                 className="page-fuzzy page-fuzzy--process-anatomy"
-                fontSize="clamp(46px, 5.6vw, 88px)"
+                fontSize="clamp(48px, 5vw, 72px)"
                 fontWeight={600}
                 fontFamily='"Hiragino Sans GB", "PingFang SC", sans-serif'
                 color="#ede9df"
@@ -71,60 +71,70 @@ export default function ProcessAnatomyHero({ reduceMotion }: ProcessAnatomyHeroP
             <span className="process-archive__rule process-archive__rule--h" />
             <span className="process-archive__rule process-archive__rule--v" />
 
-            <div className="process-archive__lyric">
-              <span className="process-archive__meta">VERSE 01 · LYRIC NOTE · REV. 03</span>
-              <p className="process-archive__line">
-                门锁记得你的方向
-                <span className="process-archive__caret" />
-              </p>
-            </div>
-
             <div className="process-archive__stamp">
               <span>02:14 AM</span>
               <span>SESSION 07</span>
             </div>
 
-            <span className="process-archive__revision">LYRIC REVISION</span>
+            <div className="process-archive__body">
+              <div className="process-archive__lyric">
+                <span className="process-archive__meta">VERSE 01 · SENSORY NOTE</span>
+                <p className="process-archive__line">
+                  我想盛夏大概是橘子味道的汽水
+                  <span className="process-archive__caret" />
+                </p>
+                <p className="process-archive__note">把一个季节，写成可以入口的味道。</p>
 
-            <div className="process-archive__swap">
-              <span className="process-archive__struck">等待</span>
-              <span className="process-archive__arrow" aria-hidden>
-                →
-              </span>
-              <span className="process-archive__fresh">方向</span>
-            </div>
-
-            <div className="process-archive__wave">
-              <svg viewBox="0 0 280 36" preserveAspectRatio="none" focusable="false">
-                <path
-                  d="M0 18 L8 12 L16 22 L24 10 L32 26 L40 14 L48 20 L56 8 L64 24 L72 16 L80 18 L88 11 L96 25 L104 15 L112 21 L120 9 L128 23 L136 17 L144 19 L152 13 L160 22 L168 16 L176 18 L184 14 L192 20 L200 17 L208 18 L216 16 L224 19 L232 17 L240 18 L248 17.5 L256 18 L280 18"
-                  fill="none"
-                  stroke="rgba(185, 180, 216, 0.45)"
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                />
-              </svg>
-              <span className="process-archive__wave-label">TAKE 03 · VOICE</span>
-            </div>
-
-            <div className="process-archive__daw">
-              <div className="process-archive__lane process-archive__lane--a">
-                <span>HOOK</span>
+                <div className="process-archive__sensory">
+                  <span className="sensory-item">
+                    <span className="sensory-label">SEASON</span>
+                    <span className="sensory-value">盛夏</span>
+                  </span>
+                  <span className="process-archive__sensory-sep" aria-hidden="true" />
+                  <span className="sensory-item">
+                    <span className="sensory-label">TASTE</span>
+                    <span className="sensory-value">橘子</span>
+                  </span>
+                  <span className="process-archive__sensory-sep" aria-hidden="true" />
+                  <span className="sensory-item">
+                    <span className="sensory-label">TEXTURE</span>
+                    <span className="sensory-value">气泡感</span>
+                  </span>
+                </div>
               </div>
-              <div className="process-archive__lane process-archive__lane--b">
-                <span>TEXTURE</span>
+
+              <div className="process-archive__wave">
+                <svg viewBox="0 0 280 36" preserveAspectRatio="none" focusable="false">
+                  <path
+                    d="M0 18 L8 12 L16 22 L24 10 L32 26 L40 14 L48 20 L56 8 L64 24 L72 16 L80 18 L88 11 L96 25 L104 15 L112 21 L120 9 L128 23 L136 17 L144 19 L152 13 L160 22 L168 16 L176 18 L184 14 L192 20 L200 17 L208 18 L216 16 L224 19 L232 17 L240 18 L248 17.5 L256 18 L280 18"
+                    fill="none"
+                    stroke="rgba(185, 180, 216, 0.45)"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <span className="process-archive__wave-label">TAKE 03 · VOICE</span>
               </div>
-              <div className="process-archive__lane process-archive__lane--c">
+
+              <div className="process-archive__daw">
+                <div className="process-archive__lane process-archive__lane--a">
+                  <span>HOOK</span>
+                </div>
+                <div className="process-archive__lane process-archive__lane--b">
+                  <span>TEXTURE</span>
+                </div>
+                <div className="process-archive__lane process-archive__lane--c">
+                  <span>VERSE</span>
+                </div>
+                <span className="process-archive__playhead" />
+              </div>
+
+              <div className="process-archive__tags">
                 <span>VERSE</span>
+                <span>HOOK</span>
+                <span>TEXTURE</span>
+                <span>VOICE</span>
               </div>
-              <span className="process-archive__playhead" />
-            </div>
-
-            <div className="process-archive__tags">
-              <span>VERSE</span>
-              <span>HOOK</span>
-              <span>TEXTURE</span>
-              <span>VOICE</span>
             </div>
           </div>
         </div>
