@@ -103,39 +103,18 @@ function useIsMobile(bp = 767) {
   return mobile;
 }
 
-/**
- * Phone spatial float layer — fixed positions (not random),
- * scattered behind copy; safe of nav / name / CTAs / cat.
- * CSS vars: --x --y --delay --duration --rotate
- */
-type MobileWord = {
-  id: string;
-  text: string;
-  tier: "core" | "craft" | "soft";
-  x: number;
-  y: number;
-  rotate: number;
-  delay: number;
-  duration: number;
-};
-
-const MOBILE_WORDS: MobileWord[] = [
-  // Core tools — top-right / sides
-  { id: "logic", text: "Logic Pro", tier: "core", x: 78, y: 12, rotate: -7, delay: 0.2, duration: 11 },
-  { id: "fl", text: "FL Studio", tier: "core", x: 90, y: 28, rotate: 5, delay: 1.1, duration: 13 },
-  { id: "suno", text: "Suno", tier: "core", x: 8, y: 36, rotate: -4, delay: 0.6, duration: 9.5 },
-  { id: "ai", text: "AI Workflow", tier: "core", x: 82, y: 52, rotate: 6, delay: 1.8, duration: 12 },
-  // Craft — sides / between paragraphs / lower half
-  { id: "lyrics", text: "歌词", tier: "craft", x: 14, y: 22, rotate: -8, delay: 0.4, duration: 10 },
-  { id: "arrange", text: "编曲", tier: "craft", x: 92, y: 40, rotate: 3, delay: 2.2, duration: 14 },
-  { id: "produce", text: "制作", tier: "craft", x: 6, y: 58, rotate: -5, delay: 1.4, duration: 8.5 },
-  { id: "sound", text: "声音", tier: "craft", x: 88, y: 66, rotate: 4, delay: 0.9, duration: 11.5 },
-  { id: "inspire", text: "灵感", tier: "craft", x: 18, y: 74, rotate: -6, delay: 2.6, duration: 9 },
-  { id: "melody", text: "旋律", tier: "craft", x: 42, y: 82, rotate: 5, delay: 1.6, duration: 12.5 },
-  // Soft accents
-  { id: "prompt", text: "Prompt", tier: "soft", x: 68, y: 20, rotate: -3, delay: 0.8, duration: 10.5 },
-  { id: "data", text: "Data", tier: "soft", x: 30, y: 88, rotate: 4, delay: 2.0, duration: 7.5 },
-];
+/** Phone keep-list — secondary float words are omitted to reduce clutter */
+const MOBILE_KEEP_IDS = [
+  "logic",
+  "fl",
+  "ai",
+  "suno",
+  "arrange",
+  "produce",
+  "lyrics",
+  "sound",
+  "inspire",
+] as const;
 
 export default function CreativeUniverse() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -352,36 +331,36 @@ export default function CreativeUniverse() {
   }, [mobile, floatEnabled]);
 
   if (mobile) {
+    const mobileNodes = NODES.filter((n) =>
+      (MOBILE_KEEP_IDS as readonly string[]).includes(n.id),
+    );
     const mobileEntrance =
       awaitingField
         ? " field-map--await"
         : revealingField
           ? " field-map--reveal"
           : "";
-    const live = floatEnabled || (!awaitingField && !revealingField);
     return (
-      <aside
-        className={`field-map field-map--mobile mobile-floating-words${mobileEntrance}${live ? " mobile-floating-words--live" : ""}`}
-        aria-hidden
-      >
-        {MOBILE_WORDS.map((node, index) => (
-          <span
-            key={node.id}
-            className={`mobile-floating-words__word mobile-floating-words__word--${node.tier} field-word field-word--${node.tier}`}
-            style={{
-              ["--x" as string]: `${node.x}%`,
-              ["--y" as string]: `${node.y}%`,
-              ["--rotate" as string]: `${node.rotate}deg`,
-              ["--delay" as string]: `${node.delay}s`,
-              ["--duration" as string]: `${node.duration}s`,
-              ["--enter-delay" as string]: `${0.05 + index * 0.07}s`,
-              ["--enter-opacity" as string]:
-                node.tier === "core" ? "0.72" : node.tier === "craft" ? "0.55" : "0.4",
-            }}
-          >
-            {node.text}
-          </span>
-        ))}
+      <aside className={`field-map field-map--mobile${mobileEntrance}`} aria-hidden>
+        {mobileNodes.map((node, index) => {
+          const style = TIER[node.tier];
+          return (
+            <span
+              key={node.id}
+              className={`field-word field-word--${node.tier}`}
+              style={{
+                opacity:
+                  floatEnabled || (!awaitingField && !revealingField)
+                    ? style.opacity
+                    : undefined,
+                ["--enter-delay" as string]: `${0.05 + index * 0.06}s`,
+                ["--enter-opacity" as string]: String(style.opacity),
+              }}
+            >
+              {node.text}
+            </span>
+          );
+        })}
       </aside>
     );
   }

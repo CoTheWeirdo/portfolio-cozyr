@@ -316,22 +316,22 @@ function IntroBridgeCat({
     const vh = window.innerHeight;
     const isPhone = vw <= 767;
 
-    // Phone: 105–125px settled footprint; desktop/tablet unchanged.
+    // Phone: slightly smaller settled footprint; desktop/tablet unchanged.
     // Safe-area via visualViewport offset when available (notched devices).
     const vv = window.visualViewport;
     const safeRight = Math.max(0, vw - (vv ? vv.offsetLeft + vv.width : vw));
     const safeBottom = Math.max(0, vh - (vv ? vv.offsetTop + vv.height : vh));
 
     const endW = isPhone
-      ? Math.min(125, Math.max(105, vw * 0.28))
+      ? Math.min(84, Math.max(64, vw * 0.17))
       : Math.min(112, Math.max(88, vw * 0.072));
     const endRight =
       (isPhone
-        ? Math.min(20, Math.max(12, vw * 0.04))
+        ? Math.min(28, Math.max(16, vw * 0.045))
         : Math.min(40, Math.max(24, vw * 0.024))) + safeRight;
     const endBottom =
       (isPhone
-        ? Math.min(24, Math.max(12, vh * 0.025))
+        ? Math.min(28, Math.max(14, vh * 0.03))
         : Math.min(40, Math.max(24, vh * 0.04))) + safeBottom;
     const endLeft = vw - endRight - endW;
     const endTop = vh - endBottom - endW * (200 / 139);
