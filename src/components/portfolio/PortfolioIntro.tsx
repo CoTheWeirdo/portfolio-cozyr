@@ -13,17 +13,27 @@ import {
   useIntro,
 } from "@/components/portfolio/IntroOrchestrator";
 
-/** Phone-only FuzzyText size — canvas measures fontSize at init. */
-function useIsPhone(bp = 767) {
-  const [phone, setPhone] = useState(false);
+/** Responsive FuzzyText size — canvas measures resolved px at init/resize. */
+function useFuzzyBreakpointSize(
+  desktop: string,
+  tablet: string,
+  phone: string,
+  tabletMax = 1199,
+  phoneMax = 767,
+) {
+  const [size, setSize] = useState(desktop);
   useEffect(() => {
-    const mq = window.matchMedia(`(max-width: ${bp}px)`);
-    const sync = () => setPhone(mq.matches);
+    const sync = () => {
+      const w = window.innerWidth;
+      if (w <= phoneMax) setSize(phone);
+      else if (w <= tabletMax) setSize(tablet);
+      else setSize(desktop);
+    };
     sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, [bp]);
-  return phone;
+    window.addEventListener("resize", sync);
+    return () => window.removeEventListener("resize", sync);
+  }, [desktop, tablet, phone, tabletMax, phoneMax]);
+  return size;
 }
 
 const marqueeItems = [
@@ -41,14 +51,15 @@ const ease = [0.22, 1, 0.36, 1] as const;
 
 function IntroStage() {
   const reduceMotion = useReducedMotion();
-  const isPhone = useIsPhone();
+  const nameFontSize = useFuzzyBreakpointSize(
+    "clamp(58px, 5.4vw, 88px)",
+    "clamp(50px, 7vw, 70px)",
+    "clamp(44px, 13vw, 60px)",
+  );
   const { reveal, playIntro, ready } = useIntro();
   const gate = ready && (reveal || !playIntro);
   const initial = reduceMotion || !playIntro ? false : "hidden";
   const animateTo = gate ? "show" : "hidden";
-  const nameFontSize = isPhone
-    ? "clamp(44px, 13vw, 60px)"
-    : "clamp(2.8rem, 7.5vw, 5.5rem)";
 
   const enter = {
     meta: {

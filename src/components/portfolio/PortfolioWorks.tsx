@@ -12,8 +12,35 @@ import { CLIP_DURATION_SEC, hexToRgb, works } from "@/data/portfolioContent";
 
 type TrackId = number;
 
+function useFuzzyBreakpointSize(
+  desktop: string,
+  tablet: string,
+  phone: string,
+  tabletMax = 1199,
+  phoneMax = 767,
+) {
+  const [size, setSize] = useState(desktop);
+  useEffect(() => {
+    const sync = () => {
+      const w = window.innerWidth;
+      if (w <= phoneMax) setSize(phone);
+      else if (w <= tabletMax) setSize(tablet);
+      else setSize(desktop);
+    };
+    sync();
+    window.addEventListener("resize", sync);
+    return () => window.removeEventListener("resize", sync);
+  }, [desktop, tablet, phone, tabletMax, phoneMax]);
+  return size;
+}
+
 export default function PortfolioWorks() {
   const reduceMotion = useReducedMotion();
+  const heroFuzzySize = useFuzzyBreakpointSize(
+    "clamp(54px, 5.8vw, 84px)",
+    "clamp(46px, 7vw, 64px)",
+    "clamp(40px, 12vw, 54px)",
+  );
   const audioRef = useRef<HTMLAudioElement>(null);
   const pauseCaseAudioRef = useRef<(() => void) | null>(null);
   const worksRailRef = useRef<HTMLDivElement>(null);
@@ -413,7 +440,7 @@ export default function PortfolioWorks() {
           ) : (
             <FuzzyText
               className="page-fuzzy page-fuzzy--works"
-              fontSize="clamp(2.25rem, 5vw, 4.6rem)"
+              fontSize={heroFuzzySize}
               fontWeight={600}
               fontFamily='"Hiragino Sans GB", "PingFang SC", sans-serif'
               color="#ede9df"

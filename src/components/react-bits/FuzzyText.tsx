@@ -2,8 +2,14 @@
 
 /**
  * Adapted from react-bits (MIT) — https://github.com/DavidHDev/react-bits
+ *
+ * Important: CanvasRenderingContext2D.font does not reliably accept CSS
+ * functions like clamp()/vw. Always resolve to a concrete px size before
+ * measuring or painting, and keep CSS display size equal to the logical
+ * (unscaled) buffer size — never rely on max-width:100% + height:auto to
+ * "fit" the canvas (that visually shrinks the glyphs).
  */
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 type FuzzyTextProps = {
   children: React.ReactNode;
@@ -31,6 +37,19 @@ type FuzzyCanvas = HTMLCanvasElement & {
   cleanupFuzzyText?: () => void;
 };
 
+function resolveFontSizePx(fontSize: number | string): number {
+  if (typeof fontSize === "number") return fontSize;
+  const temp = document.createElement("span");
+  temp.style.cssText =
+    "position:absolute;visibility:hidden;pointer-events:none;white-space:nowrap;";
+  temp.style.fontSize = fontSize;
+  document.body.appendChild(temp);
+  const computedSize = window.getComputedStyle(temp).fontSize;
+  const px = parseFloat(computedSize);
+  document.body.removeChild(temp);
+  return Number.isFinite(px) && px > 0 ? px : 16;
+}
+
 export default function FuzzyText({
   children,
   fontSize = "clamp(2rem, 10vw, 10rem)",
@@ -53,6 +72,22 @@ export default function FuzzyText({
   className = "",
 }: FuzzyTextProps) {
   const canvasRef = useRef<FuzzyCanvas | null>(null);
+  // Re-measure clamp()/vw sizes when the viewport changes.
+  const [layoutKey, setLayoutKey] = useState(0);
+
+  useEffect(() => {
+    if (typeof fontSize === "number") return;
+    let timer = 0;
+    const onResize = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => setLayoutKey((k) => k + 1), 120);
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [fontSize]);
 
   useEffect(() => {
     let animationFrameId = 0;
@@ -72,8 +107,9 @@ export default function FuzzyText({
           ? window.getComputedStyle(canvas).fontFamily || "sans-serif"
           : fontFamily;
 
-      const fontSizeStr = typeof fontSize === "number" ? `${fontSize}px` : fontSize;
-      const fontString = `${fontWeight} ${fontSizeStr} ${computedFontFamily}`;
+      const numericFontSize = resolveFontSizePx(fontSize);
+      // Canvas font must be a concrete px size — never pass clamp()/vw.
+      const fontString = `${fontWeight} ${numericFontSize}px ${computedFontFamily}`;
 
       try {
         await document.fonts.load(fontString);
@@ -82,25 +118,13 @@ export default function FuzzyText({
       }
       if (isCancelled) return;
 
-      let numericFontSize: number;
-      if (typeof fontSize === "number") {
-        numericFontSize = fontSize;
-      } else {
-        const temp = document.createElement("span");
-        temp.style.fontSize = fontSize;
-        document.body.appendChild(temp);
-        const computedSize = window.getComputedStyle(temp).fontSize;
-        numericFontSize = parseFloat(computedSize);
-        document.body.removeChild(temp);
-      }
-
       const text = React.Children.toArray(children).join("");
 
       const offscreen = document.createElement("canvas");
       const offCtx = offscreen.getContext("2d");
       if (!offCtx) return;
 
-      offCtx.font = `${fontWeight} ${fontSizeStr} ${computedFontFamily}`;
+      offCtx.font = fontString;
       offCtx.textBaseline = "alphabetic";
 
       let totalWidth = 0;
@@ -132,7 +156,7 @@ export default function FuzzyText({
       offscreen.height = tightHeight;
 
       const xOffset = extraWidthBuffer / 2;
-      offCtx.font = `${fontWeight} ${fontSizeStr} ${computedFontFamily}`;
+      offCtx.font = fontString;
       offCtx.textBaseline = "alphabetic";
 
       if (gradient && Array.isArray(gradient) && gradient.length >= 2) {
@@ -154,9 +178,20 @@ export default function FuzzyText({
       }
 
       const horizontalMargin = fuzzRange + 20;
-      const verticalMargin = 0;
-      canvas.width = offscreenWidth + horizontalMargin * 2;
-      canvas.height = tightHeight + verticalMargin * 2;
+      const verticalMargin = Math.ceil(fuzzRange * 0.15);
+      const logicalWidth = offscreenWidth + horizontalMargin * 2;
+      const logicalHeight = tightHeight + verticalMargin * 2;
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.max(1, Math.ceil(logicalWidth * dpr));
+      canvas.height = Math.max(1, Math.ceil(logicalHeight * dpr));
+      // CSS size must stay logical — never let parent CSS shrink via width:100%.
+      canvas.style.width = `${logicalWidth}px`;
+      canvas.style.height = `${logicalHeight}px`;
+      canvas.style.maxWidth = "none";
+      canvas.style.display = "block";
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.translate(horizontalMargin, verticalMargin);
 
       const interactiveLeft = horizontalMargin + xOffset;
@@ -358,6 +393,7 @@ export default function FuzzyText({
     glitchDuration,
     gradient,
     letterSpacing,
+    layoutKey,
   ]);
 
   return <canvas ref={canvasRef} className={className} />;
