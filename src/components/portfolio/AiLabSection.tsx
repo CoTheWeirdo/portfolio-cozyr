@@ -15,6 +15,8 @@ import { autoRenewalCase, type AiCaseHighlight } from "@/data/autoRenewalCase";
 type AiLabSectionProps = {
   onRegisterPause?: (pause: (() => void) | null) => void;
   onPlayStart?: () => void;
+  /** Works-page only extras; /process keeps default false so appearance is unchanged. */
+  showWorksExtras?: boolean;
 };
 
 type ActivePlayback = "full" | "post-chorus" | "verse-2" | null;
@@ -49,6 +51,7 @@ function MiniWave({ active }: { active?: boolean }) {
 export default function AiLabSection({
   onRegisterPause,
   onPlayStart,
+  showWorksExtras = false,
 }: AiLabSectionProps) {
   const reduceMotion = useReducedMotion();
   const caseData = autoRenewalCase;
@@ -339,7 +342,11 @@ export default function AiLabSection({
   const displayDuration = caseData.displayDuration;
 
   return (
-    <section className="works-ai" aria-labelledby="works-ai-title">
+    <section
+      id={showWorksExtras ? "works-ai" : undefined}
+      className="works-ai"
+      aria-labelledby="works-ai-title"
+    >
       <header className="works-chapter-head works-chapter-head--ai">
         <div className="works-chapter-head__inner">
           <div className="works-chapter-head__copy">
@@ -410,6 +417,22 @@ export default function AiLabSection({
                   </div>
                 ))}
               </dl>
+              {showWorksExtras ? (
+                <div className="ai-case__duty-strip" aria-label="职责摘要">
+                  <div className="ai-case__duty-col">
+                    <p className="ai-case__duty-en">MY INPUT</p>
+                    <p className="ai-case__duty-cn">概念、关键歌词、声音要求</p>
+                  </div>
+                  <div className="ai-case__duty-col">
+                    <p className="ai-case__duty-en">MODEL OUTPUT</p>
+                    <p className="ai-case__duty-cn">作曲、编曲、演唱</p>
+                  </div>
+                  <div className="ai-case__duty-col">
+                    <p className="ai-case__duty-en">MY DECISION</p>
+                    <p className="ai-case__duty-cn">六版比较、四版保留、最终筛选</p>
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
         </header>
@@ -628,6 +651,41 @@ export default function AiLabSection({
             </div>
           </div>
         </section>
+
+        {showWorksExtras ? (
+          <section
+            className="ai-case__block ai-case__decision-track"
+            aria-labelledby="ai-case-decision-track"
+          >
+            <header className="ai-case__decision-track-head">
+              <p id="ai-case-decision-track" className="ai-case__decision-track-en">
+                VERSION DECISION TRACK
+              </p>
+              <p className="ai-case__decision-track-cn">版本筛选路径</p>
+            </header>
+            <div className="ai-case__decision-rail-wrap">
+              <ol className="ai-case__decision-rail" aria-label="六个生成版本">
+                {caseData.selection.versions.map((version) => {
+                  const isFinal = version === caseData.selection.selectedVersion;
+                  return (
+                    <li
+                      key={version}
+                      className={`ai-case__decision-node${isFinal ? " is-final" : ""}`}
+                    >
+                      <span className="ai-case__decision-ver">{version}</span>
+                      {isFinal ? (
+                        <span className="ai-case__decision-final">FINAL SELECTED</span>
+                      ) : null}
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+            <p className="ai-case__decision-summary">
+              6 GENERATED / 4 RETAINED / 1 FINAL
+            </p>
+          </section>
+        ) : null}
 
         <section className="ai-case__block" aria-labelledby="ai-case-selection">
           <header className="ai-case__block-head">

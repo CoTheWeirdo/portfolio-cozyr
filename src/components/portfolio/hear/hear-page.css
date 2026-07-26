@@ -1,0 +1,822 @@
+/**
+ * /works («听见») — vinyl intro + Side A/B listening.
+ * Scoped under .portfolio--works-page / .hear-*
+ */
+
+.portfolio--works-page {
+  overflow-x: clip;
+}
+
+.portfolio--works-page .portfolio__content {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* ——— Vinyl intro ——— */
+.hear-vinyl {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 52rem;
+  min-height: min(88svh, 44rem);
+  margin: 0 auto;
+  padding: clamp(5.5rem, 12vh, 7.5rem) 1.25rem clamp(3rem, 6vh, 4.5rem);
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.hear-vinyl__stage {
+  position: relative;
+  width: min(100%, clamp(240px, 34vw, 550px));
+  aspect-ratio: 1;
+  margin: 0 auto 1.75rem;
+}
+
+.hear-vinyl__stage::after {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: -4%;
+  height: 10%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0.38) 0%,
+    transparent 72%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hear-vinyl__disc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  opacity: 0;
+  transform: rotate(-18deg) scale(0.96);
+}
+
+/* Visual body spins; wrapper keeps intro/return transforms. */
+.hear-vinyl__disc::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    /* center hole */
+    radial-gradient(circle at 50% 50%, #050505 0 2.4%, transparent 2.55%),
+    /* soft surface shading */
+    radial-gradient(
+      circle at 38% 32%,
+      rgba(255, 255, 255, 0.045) 0%,
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 68% 72%,
+      rgba(0, 0, 0, 0.35) 0%,
+      transparent 48%
+    ),
+    /* cold blue rim glint (top-left arc) */
+    conic-gradient(
+      from 210deg at 50% 50%,
+      transparent 0deg,
+      transparent 18deg,
+      rgba(120, 170, 210, 0.11) 28deg,
+      transparent 42deg,
+      transparent 360deg
+    ),
+    /* violet rim glint (bottom-right arc) */
+    conic-gradient(
+      from 30deg at 50% 50%,
+      transparent 0deg,
+      transparent 16deg,
+      rgba(150, 120, 180, 0.1) 26deg,
+      transparent 40deg,
+      transparent 360deg
+    ),
+    /* outer fine grooves */
+    repeating-radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 255, 255, 0.028) 0 0.7px,
+      transparent 0.7px 3.2px
+    ),
+    /* mid band — wider spacing */
+    repeating-radial-gradient(
+      circle at 50% 50%,
+      transparent 0 38%,
+      rgba(255, 255, 255, 0.03) 38% 38.12%,
+      transparent 38.12% 41%,
+      rgba(255, 255, 255, 0.022) 41% 41.1%,
+      transparent 41.1% 44.5%,
+      rgba(255, 255, 255, 0.02) 44.5% 44.6%,
+      transparent 44.6% 100%
+    ),
+    /* inner denser grooves */
+    repeating-radial-gradient(
+      circle at 50% 50%,
+      transparent 0 22%,
+      rgba(255, 255, 255, 0.04) 22% 22.08%,
+      transparent 22.08% 23.4%,
+      rgba(255, 255, 255, 0.032) 23.4% 23.48%,
+      transparent 23.48% 24.7%,
+      rgba(255, 255, 255, 0.028) 24.7% 24.78%,
+      transparent 24.78% 32%
+    ),
+    /* faint blue-violet groove reflection */
+    radial-gradient(
+      circle at 42% 40%,
+      rgba(120, 170, 210, 0.05) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 62% 60%,
+      rgba(150, 120, 180, 0.045) 0%,
+      transparent 52%
+    ),
+    /* base body */
+    radial-gradient(circle at 50% 50%, #141311 0%, #0a0a09 55%, #121110 78%, #0c0c0b 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(237, 233, 223, 0.1),
+    inset 0 0 0 2px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 18px 36px rgba(0, 0, 0, 0.28);
+  animation: hear-vinyl-spin 36s linear infinite;
+}
+
+.hear-vinyl__label {
+  position: absolute;
+  inset: 33.5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.28rem;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, #070706 0 4.5%, transparent 4.7%),
+    radial-gradient(
+      circle at 40% 34%,
+      rgba(255, 255, 255, 0.03) 0%,
+      transparent 55%
+    ),
+    repeating-radial-gradient(
+      circle at 30% 25%,
+      rgba(255, 255, 255, 0.015) 0 0.6px,
+      transparent 0.6px 2.2px
+    ),
+    radial-gradient(circle at 42% 36%, #24221e, #141310 72%);
+  box-shadow:
+    0 0 0 1px rgba(185, 180, 216, 0.14),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  opacity: 0;
+}
+
+.hear-vinyl__label::before {
+  content: "";
+  position: absolute;
+  inset: -7%;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(120, 120, 118, 0.28);
+  pointer-events: none;
+}
+
+.hear-vinyl__label-yz {
+  position: relative;
+  z-index: 1;
+  font-family: "Avenir Next Condensed", "Arial Narrow", "Hiragino Sans GB", "PingFang SC", sans-serif;
+  font-size: clamp(0.72rem, 1.15vw, 0.85rem);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: rgba(237, 233, 223, 0.72);
+  transform: translateX(0.11em);
+}
+
+.hear-vinyl__label-side {
+  position: relative;
+  z-index: 1;
+  font-family: "Avenir Next Condensed", "Arial Narrow", "Hiragino Sans GB", "PingFang SC", sans-serif;
+  font-size: clamp(0.88rem, 1.45vw, 1.05rem);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: rgba(237, 233, 223, 0.9);
+  transform: translateX(0.07em);
+}
+
+.hear-vinyl__copy {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.hear-vinyl__title {
+  margin: 0;
+  font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
+  font-size: clamp(2rem, 4.5vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  color: #ede9df;
+}
+
+.hear-vinyl__lead {
+  margin: 0.85rem 0 0;
+  color: rgba(214, 210, 200, 0.82);
+  font-size: clamp(0.92rem, 1.5vw, 1.05rem);
+  letter-spacing: 0.04em;
+}
+
+.hear-vinyl__sides {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1.5rem;
+  width: min(100%, 28rem);
+  margin-top: 2.1rem;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.hear-vinyl__side {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0.85rem 0.4rem;
+  cursor: pointer;
+  color: rgba(214, 210, 200, 0.55);
+  text-align: left;
+  transition: color 0.25s ease, opacity 0.25s ease;
+  border-top: 1px solid rgba(185, 180, 216, 0.14);
+}
+
+.hear-vinyl__side:hover,
+.hear-vinyl__side:focus-visible {
+  color: rgba(237, 233, 223, 0.92);
+  outline: none;
+}
+
+.hear-vinyl__side.is-active {
+  color: rgba(237, 233, 223, 0.96);
+  border-top-color: rgba(185, 180, 216, 0.42);
+}
+
+.hear-vinyl__side-mark {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+}
+
+.hear-vinyl__side-text {
+  display: block;
+  font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+}
+
+/* Intro animation (first visit) */
+.hear-vinyl--intro .hear-vinyl__disc {
+  animation: hear-vinyl-disc 2.1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+.hear-vinyl--intro .hear-vinyl__label {
+  animation: hear-vinyl-fade 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.45s forwards;
+}
+.hear-vinyl--intro .hear-vinyl__copy {
+  animation: hear-vinyl-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.85s forwards;
+}
+.hear-vinyl--intro .hear-vinyl__sides {
+  animation: hear-vinyl-rise 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) 1.25s forwards;
+}
+
+/* Short return transition */
+.hear-vinyl--return .hear-vinyl__disc,
+.hear-vinyl--return .hear-vinyl__label,
+.hear-vinyl--return .hear-vinyl__copy,
+.hear-vinyl--return .hear-vinyl__sides {
+  opacity: 1;
+  transform: none;
+  animation: hear-vinyl-return 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.hear-vinyl--static .hear-vinyl__disc,
+.hear-vinyl--static .hear-vinyl__label,
+.hear-vinyl--static .hear-vinyl__copy,
+.hear-vinyl--static .hear-vinyl__sides {
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+
+@keyframes hear-vinyl-disc {
+  0% {
+    opacity: 0;
+    transform: rotate(-18deg) scale(0.96);
+  }
+  55% {
+    opacity: 1;
+    transform: rotate(4deg) scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+@keyframes hear-vinyl-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hear-vinyl-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hear-vinyl-return {
+  from {
+    opacity: 0.55;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hear-vinyl-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hear-vinyl__disc::before {
+    animation: none !important;
+  }
+
+  .hear-vinyl--intro .hear-vinyl__disc,
+  .hear-vinyl--intro .hear-vinyl__label,
+  .hear-vinyl--intro .hear-vinyl__copy,
+  .hear-vinyl--intro .hear-vinyl__sides,
+  .hear-vinyl--return .hear-vinyl__disc,
+  .hear-vinyl--return .hear-vinyl__label,
+  .hear-vinyl--return .hear-vinyl__copy,
+  .hear-vinyl--return .hear-vinyl__sides {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ——— Shared side chrome ——— */
+.hear-side {
+  width: 100%;
+  max-width: min(100% - 2.5rem, 72rem);
+  min-width: 0;
+  margin: 0 auto;
+  padding: clamp(4.8rem, 8vh, 6rem) 0 clamp(3.5rem, 7vh, 5.5rem);
+  box-sizing: border-box;
+}
+
+.hear-side__bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.85rem;
+}
+
+.hear-side__back {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  color: rgba(214, 210, 200, 0.72);
+  transition: color 0.2s ease;
+}
+
+.hear-side__back:hover,
+.hear-side__back:focus-visible {
+  color: rgba(237, 233, 223, 0.95);
+  outline: none;
+}
+
+.hear-side__back-cn {
+  display: block;
+  font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+}
+
+.hear-side__back-en {
+  display: block;
+  margin-top: 0.2rem;
+  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: rgba(185, 180, 216, 0.48);
+}
+
+.hear-side__meta {
+  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: rgba(185, 180, 216, 0.52);
+  text-align: right;
+}
+
+.hear-side__head {
+  margin-bottom: 2.1rem;
+}
+
+.hear-side__index {
+  display: block;
+  margin-bottom: 0.55rem;
+  color: rgba(201, 197, 187, 0.72);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.hear-side__title {
+  margin: 0;
+  font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
+  font-size: clamp(1.45rem, 2.8vw, 2.05rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: #ede9df;
+}
+
+.hear-side__en {
+  display: block;
+  margin-top: 0.55rem;
+  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: rgba(185, 180, 216, 0.5);
+}
+
+.hear-side__lead {
+  margin: 0.9rem 0 0;
+  max-width: 28rem;
+  color: rgba(214, 210, 200, 0.84);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.hear-side__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.2fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: start;
+  min-width: 0;
+}
+
+.hear-side__layout--mirror {
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.92fr);
+}
+
+.hear-side__now {
+  min-width: 0;
+}
+
+.hear-side__cover {
+  position: relative;
+  width: min(100%, 22rem);
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #121210;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+.hear-side__cover img {
+  object-fit: cover;
+}
+
+.hear-side__now-body {
+  margin-top: 1.15rem;
+  max-width: 22rem;
+}
+
+.hear-side__now-title {
+  margin: 0;
+  font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
+  font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #ede9df;
+}
+
+.hear-side__now-sub {
+  margin: 0.25rem 0 0;
+  color: rgba(185, 180, 216, 0.62);
+  font-size: 0.88rem;
+}
+
+.hear-side__now-note {
+  margin: 0.75rem 0 0;
+  color: rgba(214, 210, 200, 0.8);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.hear-side__now-roles {
+  margin: 0.7rem 0 0;
+  color: rgba(214, 210, 200, 0.72);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+.hear-side__now-meta {
+  margin: 0.45rem 0 0;
+  color: rgba(185, 180, 216, 0.42);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+}
+
+.hear-side__now-version {
+  margin: 0.55rem 0 0;
+  color: rgba(185, 180, 216, 0.55);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+}
+
+/* ——— Tracklist grid ——— */
+.hear-tracklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  width: 100%;
+}
+
+.hear-track {
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr) 3.6rem 4.6rem;
+  column-gap: 0.85rem;
+  align-items: center;
+  min-height: 3.05rem;
+  padding: 0.15rem 0;
+  border-bottom: 1px solid rgba(185, 180, 216, 0.12);
+  position: relative;
+  opacity: 0.72;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+
+.hear-track:hover,
+.hear-track:focus-within {
+  opacity: 0.92;
+}
+
+.hear-track.is-active {
+  opacity: 1;
+}
+
+.hear-track.is-active::before {
+  content: "";
+  position: absolute;
+  left: -0.65rem;
+  top: 28%;
+  bottom: 28%;
+  width: 1px;
+  background: rgba(237, 233, 223, 0.72);
+}
+
+.hear-track__num {
+  color: rgba(185, 180, 216, 0.55);
+  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.hear-track__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgba(214, 210, 200, 0.78);
+  font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
+  font-size: 0.95rem;
+}
+
+.hear-track.is-active .hear-track__name {
+  color: #ede9df;
+}
+
+.hear-track__dur {
+  text-align: right;
+  color: rgba(185, 180, 216, 0.52);
+  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+.hear-track__audition {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  align-self: stretch;
+  width: 100%;
+  min-width: 76px;
+  min-height: 0;
+  text-align: right;
+  cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  z-index: 2;
+  color: rgba(214, 210, 200, 0.7);
+  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-size: 0.78rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s ease;
+}
+
+.hear-track__audition:hover,
+.hear-track__audition:focus-visible {
+  color: rgba(237, 233, 223, 0.95);
+  outline: none;
+}
+
+.hear-track.is-playing .hear-track__audition {
+  color: #ede9df;
+}
+
+.hear-track__progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: rgba(237, 233, 223, 0.55);
+  transform-origin: left center;
+  transform: scaleX(0);
+  pointer-events: none;
+}
+
+/* ——— Side footers ——— */
+.hear-side__foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  padding-top: 1.35rem;
+  border-top: 1px solid rgba(185, 180, 216, 0.14);
+}
+
+.hear-side__foot-link {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+  color: rgba(214, 210, 200, 0.78);
+  text-align: left;
+  transition: color 0.2s ease;
+}
+
+a.hear-side__foot-link {
+  text-align: right;
+}
+
+.hear-side__foot-link:hover,
+.hear-side__foot-link:focus-visible {
+  color: rgba(237, 233, 223, 0.96);
+  outline: none;
+}
+
+.hear-side__foot-cn {
+  display: block;
+  font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+
+.hear-side__foot-en {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: rgba(185, 180, 216, 0.48);
+}
+
+.hear-side__foot-mid {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: rgba(185, 180, 216, 0.45);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+/* ——— Responsive ——— */
+@media (max-width: 1023px) {
+  .hear-side__layout,
+  .hear-side__layout--mirror {
+    grid-template-columns: 1fr;
+  }
+
+  .hear-side__layout--mirror .hear-side__now {
+    order: -1;
+  }
+
+  .hear-side__cover {
+    width: min(100%, 18rem);
+  }
+}
+
+@media (max-width: 767px) {
+  .hear-vinyl {
+    min-height: min(86svh, 40rem);
+    padding-inline: 1rem;
+  }
+
+  .hear-vinyl__stage {
+    width: min(72vw, 380px);
+  }
+
+  .hear-vinyl__sides {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
+  .hear-side {
+    max-width: min(100% - 2rem, 72rem);
+    padding-top: 4.5rem;
+  }
+
+  .hear-track {
+    grid-template-columns: 2rem minmax(0, 1fr) 3.2rem 4.2rem;
+    column-gap: 0.55rem;
+    min-height: 2.85rem;
+  }
+
+  .hear-track.is-active::before {
+    left: -0.4rem;
+  }
+
+  .hear-side__foot {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  a.hear-side__foot-link {
+    text-align: left;
+  }
+
+  .hear-side__foot-mid {
+    order: 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hear-track,
+  .hear-side__back,
+  .hear-side__foot-link,
+  .hear-vinyl__side {
+    transition: none;
+  }
+}

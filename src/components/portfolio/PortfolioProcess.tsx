@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import PortfolioShell from "@/components/portfolio/PortfolioShell";
 import ProcessAnatomyHero from "@/components/portfolio/ProcessAnatomyHero";
 import ProcessChapter from "@/components/portfolio/ProcessChapter";
+import WorksFlowMigrated from "@/components/portfolio/WorksFlowMigrated";
 import { processEvidence } from "@/data/portfolioContent";
 import {
   decisionPrinciples,
@@ -14,6 +15,7 @@ import {
   songFormMarkers,
   soundLayers,
 } from "@/data/processChapters";
+import "./process-page-refine.css";
 
 export default function PortfolioProcess() {
   const reduceMotion = useReducedMotion();
@@ -130,13 +132,7 @@ export default function PortfolioProcess() {
                       </div>
                     ) : null}
                   </div>
-                ) : (
-                  <div className="process-lyrics__notes">
-                    <span>LYRIC EDITING NOTES</span>
-                    <span className="process-lyrics__notes-rule" aria-hidden="true" />
-                    <p>{lyricEvidence.note}</p>
-                  </div>
-                )}
+                ) : null}
               </aside>
             </div>
 
@@ -158,7 +154,7 @@ export default function PortfolioProcess() {
           <div className="process-sound">
             <div className="process-sound__diagram" aria-label="声音决策方法示意图：VOICE、CHORD、BASS、TEXTURE、RHYTHM">
               <p className="process-sound__diagram-label" aria-hidden="true">
-                METHOD MAP · NOT A DAW SCREENSHOT
+                ARRANGEMENT DECISION MAP
               </p>
               <div className="process-sound__rails" aria-hidden="true">
                 {soundLayers.map((layer) => (
@@ -209,6 +205,8 @@ export default function PortfolioProcess() {
           </div>
         </ProcessChapter>
       </div>
+
+      <WorksFlowMigrated />
     </PortfolioShell>
   );
 }

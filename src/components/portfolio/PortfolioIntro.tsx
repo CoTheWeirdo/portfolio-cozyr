@@ -182,10 +182,12 @@ function IntroStage() {
           </motion.div>
 
           <div className="intro-stage__masthead">
-            <motion.h1
-              id="intro-title"
+            <h1 id="intro-title" className="sr-only">
+              张韵蕊｜音乐制作、AI 音乐实验与数据评测
+            </h1>
+            <motion.div
               className="intro-stage__title"
-              aria-label="张韵蕊"
+              aria-hidden="true"
               initial={initial}
               animate={animateTo}
               variants={enter.title}
@@ -211,7 +213,7 @@ function IntroStage() {
                   张韵蕊
                 </FuzzyText>
               )}
-            </motion.h1>
+            </motion.div>
             <motion.p
               className={`intro-stage__alias${playIntro && gate ? " intro-stage__alias--reveal" : ""}`}
               aria-label="aka Yz香菜"

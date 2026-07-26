@@ -6,9 +6,9 @@ import { motion, useReducedMotion } from "framer-motion";
 import { REVEAL_DELAY, useIntro } from "@/components/portfolio/IntroOrchestrator";
 
 const links = [
-  { href: "/works", label: "作品", note: "♪" },
-  { href: "/process", label: "制作", note: "♫" },
-  { href: "/about", label: "关于我", note: "♩" },
+  { href: "/works", label: "听见", note: "♪" },
+  { href: "/process", label: "成形", note: "♫" },
+  { href: "/about", label: "我", note: "♩" },
 ];
 
 export default function PortfolioNav() {

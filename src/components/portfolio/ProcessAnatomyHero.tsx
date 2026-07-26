@@ -25,7 +25,10 @@ export default function ProcessAnatomyHero({ reduceMotion }: ProcessAnatomyHeroP
         <div className="process-anatomy-hero__copy">
           <p className="process-anatomy-hero__kicker">03 / 创作方法</p>
 
-          <h1 id="process-title" className="process-anatomy-hero__title" aria-label="创作解剖室">
+          <h1 id="process-title" className="sr-only">
+            创作解剖室｜从灵感到成品的音乐制作过程
+          </h1>
+          <div className="process-anatomy-hero__title" aria-hidden="true">
             {reduceMotion ? (
               <span className="process-anatomy-hero__title-text">创作解剖室</span>
             ) : (
@@ -46,7 +49,7 @@ export default function ProcessAnatomyHero({ reduceMotion }: ProcessAnatomyHeroP
                 创作解剖室
               </FuzzyText>
             )}
-          </h1>
+          </div>
 
           <p className="process-anatomy-hero__en" aria-hidden="true">
             <span>ANATOMY</span>

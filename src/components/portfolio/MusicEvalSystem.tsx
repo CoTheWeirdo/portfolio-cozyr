@@ -3,7 +3,11 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { autoRenewalEvalDimensions } from "@/data/autoRenewalCase";
 
-export default function MusicEvalSystem() {
+export default function MusicEvalSystem({
+  sectionId,
+}: {
+  sectionId?: string;
+} = {}) {
   const reduceMotion = useReducedMotion();
   const fade = reduceMotion
     ? undefined
@@ -15,7 +19,11 @@ export default function MusicEvalSystem() {
       };
 
   return (
-    <section className="works-eval" aria-labelledby="works-eval-title">
+    <section
+      id={sectionId}
+      className="works-eval"
+      aria-labelledby="works-eval-title"
+    >
       <header className="works-chapter-head">
         <div className="works-chapter-head__row">
           <span className="works-chapter-head__index">03 / 音乐评测框架</span>

@@ -1,0 +1,260 @@
+/**
+ * /process page only — scoped under .portfolio--process.
+ * Round-2 light hierarchy / rhythm / readability refinements.
+ * Does not alter other routes.
+ */
+
+/* ——— Hero title stack hierarchy ——— */
+.portfolio--process .process-anatomy-hero {
+  min-height: min(740px, calc(100vh - 5.5rem));
+}
+
+.portfolio--process .process-anatomy-hero__inner {
+  padding-bottom: clamp(4.75rem, 8vw, 6.75rem);
+}
+
+.portfolio--process .process-anatomy-hero__kicker {
+  margin-bottom: 1rem;
+  color: rgba(201, 197, 187, 0.7);
+}
+
+.portfolio--process .process-anatomy-hero__en {
+  margin-top: 0.85rem;
+  font-size: clamp(1.35rem, 2.35vw, 2.1rem);
+  line-height: 1.08;
+  letter-spacing: 0.1em;
+  color: rgba(185, 180, 216, 0.4);
+}
+
+.portfolio--process .process-anatomy-hero__sub {
+  margin-top: 2rem;
+}
+
+.portfolio--process .process-anatomy-hero__lead {
+  margin-top: 0.85rem;
+  max-width: 28.5rem;
+  line-height: 1.9;
+  color: rgba(214, 210, 200, 0.88);
+}
+
+/* ——— Chapter vertical rhythm ——— */
+.portfolio--process .process-chapters {
+  padding-top: clamp(1.25rem, 2.5vw, 2rem);
+}
+
+.portfolio--process .process-chapter {
+  padding-top: clamp(4.75rem, 8.5vw, 7rem);
+  padding-bottom: clamp(1.75rem, 3.2vw, 2.75rem);
+}
+
+.portfolio--process .process-chapter__header {
+  margin-bottom: clamp(1.85rem, 3.5vw, 2.75rem);
+}
+
+.portfolio--process .process-chapter__signal {
+  margin-bottom: 1.35rem;
+  color: rgba(185, 180, 216, 0.4);
+  font-size: 0.68rem;
+}
+
+.portfolio--process .process-chapter__signal .is-active {
+  color: rgba(237, 233, 223, 0.82);
+}
+
+.portfolio--process .process-chapter__en {
+  margin-top: 0.7rem;
+  color: rgba(185, 180, 216, 0.38);
+}
+
+.portfolio--process .process-chapter__subtitle {
+  margin-top: 1.2rem;
+}
+
+.portfolio--process .process-chapter__description {
+  margin-top: 0.8rem;
+  max-width: 32rem;
+  line-height: 1.85;
+  color: rgba(201, 197, 187, 0.8);
+}
+
+/* ——— Arrangement decision map ——— */
+.portfolio--process .process-sound__diagram {
+  padding: 1.35rem 1.45rem 1.55rem;
+}
+
+.portfolio--process .process-sound__diagram-label {
+  margin-bottom: 1.35rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  color: rgba(185, 180, 216, 0.55);
+}
+
+.portfolio--process .process-sound__rails {
+  gap: 1.2rem;
+  overflow: visible;
+}
+
+.portfolio--process .process-sound__rail {
+  grid-template-columns: 5.75rem minmax(0, 1fr);
+  grid-template-areas:
+    "label track"
+    ". copy";
+  column-gap: 1rem;
+  row-gap: 0.5rem;
+  align-items: center;
+}
+
+.portfolio--process .process-sound__rail-label {
+  grid-area: label;
+  align-self: center;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  color: rgba(185, 180, 216, 0.72);
+}
+
+.portfolio--process .process-sound__rail-track {
+  grid-area: track;
+  align-self: center;
+  height: 2px;
+}
+
+.portfolio--process .process-sound__rail-copy {
+  grid-area: copy;
+  margin: 0;
+  padding-top: 0.05rem;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: rgba(201, 197, 187, 0.78);
+}
+
+.portfolio--process .process-sound__playhead {
+  left: calc(5.75rem + 1rem);
+  animation-name: process-sound-playhead-refine;
+}
+
+@keyframes process-sound-playhead-refine {
+  from {
+    left: calc(5.75rem + 1rem);
+  }
+  to {
+    left: calc(100% - 2px);
+  }
+}
+
+/* Small label readability (process only) */
+.portfolio--process .process-source__label,
+.portfolio--process .process-source__spark-label {
+  color: rgba(185, 180, 216, 0.58);
+  font-size: 0.62rem;
+}
+
+.portfolio--process .process-lyrics__tag {
+  color: rgba(185, 180, 216, 0.68);
+}
+
+.portfolio--process .process-lyrics__caption p {
+  color: rgba(201, 197, 187, 0.78);
+  line-height: 1.7;
+  max-width: 26rem;
+}
+
+.portfolio--process .process-decision__principle-q {
+  color: rgba(201, 197, 187, 0.76);
+}
+
+@media (max-width: 1023px) {
+  .portfolio--process .process-anatomy-hero__en {
+    font-size: clamp(1.2rem, 2.8vw, 1.7rem);
+  }
+
+  .portfolio--process .process-sound__rail {
+    grid-template-columns: 5rem minmax(0, 1fr);
+  }
+
+  .portfolio--process .process-sound__playhead {
+    left: calc(5rem + 1rem);
+    animation-name: process-sound-playhead-refine-tablet;
+  }
+}
+
+@keyframes process-sound-playhead-refine-tablet {
+  from {
+    left: calc(5rem + 1rem);
+  }
+  to {
+    left: calc(100% - 2px);
+  }
+}
+
+@media (max-width: 767px) {
+  .portfolio--process .process-anatomy-hero__en {
+    font-size: clamp(1.1rem, 5.2vw, 1.45rem);
+    margin-top: 0.7rem;
+  }
+
+  .portfolio--process .process-anatomy-hero__sub {
+    margin-top: 1.65rem;
+  }
+
+  .portfolio--process .process-anatomy-hero__lead {
+    max-width: none;
+    line-height: 1.8;
+  }
+
+  .portfolio--process .process-chapter {
+    padding-top: 4.75rem;
+  }
+
+  .portfolio--process .process-sound__rail {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "label"
+      "track"
+      "copy";
+    row-gap: 0.4rem;
+  }
+
+  .portfolio--process .process-sound__rail-label {
+    align-self: start;
+  }
+
+  .portfolio--process .process-sound__rail-copy {
+    padding-top: 0;
+  }
+
+  .portfolio--process .process-sound__playhead {
+    left: 0;
+    animation-name: process-sound-playhead-refine-mobile;
+  }
+
+  .portfolio--process .process-sound__diagram-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+  }
+}
+
+@keyframes process-sound-playhead-refine-mobile {
+  from {
+    left: 0;
+  }
+  to {
+    left: calc(100% - 2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio--process .process-sound__playhead {
+    animation: none !important;
+    left: 42%;
+  }
+}
+
+/* Migrated works flow — minimal spacing only */
+.portfolio--process .process-works-flow {
+  margin-top: clamp(2.5rem, 6vw, 4.5rem);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
