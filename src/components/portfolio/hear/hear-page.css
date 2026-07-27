@@ -916,7 +916,7 @@ a.hear-side__foot-link {
 
 .hear-side--b .hear-sideb-listening {
   margin-top: 2.15rem;
-  min-height: 9.2rem;
+  min-height: 13.4rem;
   max-width: 100%;
   transition: opacity 0.35s ease;
   overflow-anchor: none;
@@ -953,6 +953,89 @@ a.hear-side__foot-link {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
+}
+
+.hear-side--b .hear-sideb-fingerprint {
+  margin-top: 0.5rem;
+  display: grid;
+  grid-template-rows: 1.1em 1.35em 1.15em;
+  row-gap: 0.18rem;
+  min-height: 4rem;
+  max-width: 100%;
+  overflow-anchor: none;
+}
+
+.hear-side--b .hear-sideb-fingerprint__label {
+  margin: 0;
+  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: rgba(185, 180, 216, 0.42);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hear-side--b .hear-sideb-fingerprint__cn {
+  margin: 0;
+  font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: rgba(237, 233, 223, 0.78);
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hear-side--b .hear-sideb-fingerprint__cn-word {
+  display: inline-block;
+  opacity: 0;
+  animation: hear-sideb-fp-cn 260ms ease forwards;
+}
+
+.hear-side--b .hear-sideb-fingerprint__sep {
+  display: inline;
+  opacity: 0.55;
+}
+
+.hear-side--b .hear-sideb-fingerprint__en {
+  margin: 0;
+  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: rgba(185, 180, 216, 0.4);
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  animation: hear-sideb-fp-en 300ms ease 170ms forwards;
+}
+
+@keyframes hear-sideb-fp-cn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hear-sideb-fp-en {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .hear-side--b .hear-sideb-wave {
@@ -1257,6 +1340,20 @@ a.hear-side__foot-link {
     font-size: 0.5rem;
     letter-spacing: 0.1em;
   }
+
+  .hear-side--b .hear-sideb-fingerprint__label {
+    font-size: 0.52rem;
+    letter-spacing: 0.12em;
+  }
+
+  .hear-side--b .hear-sideb-fingerprint__cn {
+    font-size: 0.84rem;
+  }
+
+  .hear-side--b .hear-sideb-fingerprint__en {
+    font-size: 0.54rem;
+    letter-spacing: 0.08em;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1273,5 +1370,12 @@ a.hear-side__foot-link {
   .hear-side--b .hear-sideb-cover__incoming {
     animation-duration: 0.01ms;
     animation-iteration-count: 1;
+  }
+
+  .hear-side--b .hear-sideb-fingerprint__cn-word,
+  .hear-side--b .hear-sideb-fingerprint__en {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }

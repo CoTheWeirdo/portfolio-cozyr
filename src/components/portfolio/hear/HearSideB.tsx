@@ -24,6 +24,24 @@ function listeningLine(trackId: string): string {
   return "20秒试听片段";
 }
 
+const LISTENING_FINGERPRINTS: Record<
+  string,
+  { cn: readonly [string, string, string]; en: string }
+> = {
+  [autoRenewalCase.id]: {
+    cn: ["循环感", "克制", "自嘲"],
+    en: "REPETITION · RESTRAINT · WRY",
+  },
+  hou: {
+    cn: ["悬停", "留白", "晨昏"],
+    en: "SUSPENDED · SPACIOUS · TWILIGHT",
+  },
+  "blue-again": {
+    cn: ["夜色", "距离感", "蓝色余温"],
+    en: "NIGHTFALL · DISTANCE · BLUE AFTERGLOW",
+  },
+};
+
 const aiTracks = [
   {
     id: autoRenewalCase.id,
@@ -91,6 +109,8 @@ export default function HearSideB({
   const selected = aiTracks[selectedIndex] ?? aiTracks[0];
   const selectedCover = selected.cover;
   const selectedNum = pad2(selectedIndex + 1);
+  const fingerprint =
+    LISTENING_FINGERPRINTS[selected.id] ?? LISTENING_FINGERPRINTS[aiTracks[0].id];
   const isSelectedPlaying = playingId === selected.id;
   const elapsedSec = isSelectedPlaying
     ? Math.min(CLIP_SEC, Math.max(0, Math.floor(clipElapsed)))
@@ -240,6 +260,29 @@ export default function HearSideB({
             </p>
             <p className="hear-sideb-listening__title">{selected.title}</p>
             <p className="hear-sideb-listening__line">{listeningLine(selected.id)}</p>
+            <div key={selected.id} className="hear-sideb-fingerprint">
+              <p className="hear-sideb-fingerprint__label">
+                听感指纹 / LISTENING FINGERPRINT
+              </p>
+              <p className="hear-sideb-fingerprint__cn">
+                {fingerprint.cn.map((word, index) => (
+                  <span key={`${selected.id}-cn-${index}`}>
+                    {index > 0 ? (
+                      <span className="hear-sideb-fingerprint__sep" aria-hidden="true">
+                        {" · "}
+                      </span>
+                    ) : null}
+                    <span
+                      className="hear-sideb-fingerprint__cn-word"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                      {word}
+                    </span>
+                  </span>
+                ))}
+              </p>
+              <p className="hear-sideb-fingerprint__en">{fingerprint.en}</p>
+            </div>
             <div className="hear-sideb-wave" aria-hidden="true">
               {WAVE_HEIGHTS.map((height, i) => (
                 <span
