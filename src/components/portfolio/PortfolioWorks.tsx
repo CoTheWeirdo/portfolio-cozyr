@@ -63,6 +63,7 @@ export default function PortfolioWorks() {
     const audio = audioRef.current;
     if (audio) {
       audio.pause();
+      audio.volume = 1;
       audio.currentTime = 0;
     }
     if (clipStopRef.current !== null) {
@@ -76,7 +77,11 @@ export default function PortfolioWorks() {
   }, []);
 
   const playClip = useCallback(
-    async (key: string, src: string) => {
+    async (
+      key: string,
+      src: string,
+      options?: { startSec?: number; fadeOut?: boolean },
+    ) => {
       const audio = audioRef.current;
       if (!audio) return;
 
@@ -90,17 +95,25 @@ export default function PortfolioWorks() {
         clipStopRef.current = null;
       }
 
+      const startSec = Math.max(0, options?.startSec ?? 0);
+      const fadeOut = options?.fadeOut === true;
+
       setPlayingKey(key);
       setClipElapsed(0);
       setClipProgress(0);
       audio.src = src;
       audio.load();
-      audio.currentTime = 0;
+      audio.volume = 1;
+      audio.currentTime = startSec;
 
       try {
         await audio.play();
+        if (Math.abs(audio.currentTime - startSec) > 0.35) {
+          audio.currentTime = startSec;
+        }
         setIsPlaying(true);
       } catch {
+        audio.volume = 1;
         setIsPlaying(false);
         setPlayingKey(null);
         return;
@@ -109,11 +122,25 @@ export default function PortfolioWorks() {
       clipStopRef.current = window.setInterval(() => {
         const current = audioRef.current;
         if (!current) return;
-        const t = current.currentTime;
-        setClipElapsed(t);
-        setClipProgress(Math.min(1, t / CLIP_DURATION_SEC));
-        if (t >= CLIP_DURATION_SEC - 0.05) {
+        const elapsed = Math.max(0, current.currentTime - startSec);
+        setClipElapsed(elapsed);
+        setClipProgress(Math.min(1, elapsed / CLIP_DURATION_SEC));
+
+        if (fadeOut) {
+          if (elapsed >= CLIP_DURATION_SEC - 1) {
+            const fadeProgress = Math.min(
+              1,
+              Math.max(0, (elapsed - (CLIP_DURATION_SEC - 1)) / 1),
+            );
+            current.volume = Math.max(0, 1 - fadeProgress);
+          } else {
+            current.volume = 1;
+          }
+        }
+
+        if (elapsed >= CLIP_DURATION_SEC - 0.05) {
           current.pause();
+          current.volume = 1;
           current.currentTime = 0;
           setIsPlaying(false);
           setPlayingKey(null);
@@ -164,6 +191,7 @@ export default function PortfolioWorks() {
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onEnded={() => {
+          if (audioRef.current) audioRef.current.volume = 1;
           setIsPlaying(false);
           setPlayingKey(null);
           setClipElapsed(0);
@@ -210,7 +238,12 @@ export default function PortfolioWorks() {
           onToggleAudition={(id) => {
             setSelectedB(id);
             const track = aiTracks.find((item) => item.id === id);
-            if (track) void playClip(`b:${id}`, track.audio);
+            if (track) {
+              void playClip(`b:${id}`, track.audio, {
+                startSec: track.previewStart,
+                fadeOut: true,
+              });
+            }
           }}
           onBackToRecord={backToRecord}
           onBackToA={() => goToSide("a")}
