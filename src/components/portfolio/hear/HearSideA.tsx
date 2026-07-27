@@ -20,12 +20,12 @@ const SIDE_A_DURATIONS: Record<number, string> = {
 
 /** Session notes keyed by existing work id — copy locked */
 const SIDE_A_SESSION_NOTES: Record<number, string> = {
-  1: "在秩序彻底建立以前，先保留一点失控。",
-  2: "把那个夏天，写成一种可以被尝到的味道。",
-  3: "让旋律比语言更早暴露情绪。",
+  1: "当梦境与现实交织，我们又该如何做取舍？",
+  2: "夏天是橘子汽水味的。",
+  3: "想念的温度可以融化冰块。",
   4: "有些问题没有答案，所以被留在了副歌里。",
-  5: "不再把情绪压低，让它直接冲出来。",
-  6: "浪漫不是一句话，是声音里反复出现的细节。",
+  5: "火已经点着了，剩下的交给鼓点。",
+  6: "浪漫没有标准答案，旋律算一种。",
 };
 
 type HearSideAProps = {

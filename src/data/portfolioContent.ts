@@ -34,7 +34,7 @@ export const works: readonly WorkItem[] = [
     glow: "#C41E1A",
     glowSoft: "#7A1412",
     type: "原创歌曲",
-    roles: ["作词", "作曲", "编曲", "人声制作"],
+    roles: ["作词", "作曲", "人声制作"],
   },
   {
     id: 2,
@@ -45,7 +45,7 @@ export const works: readonly WorkItem[] = [
     glow: "#F08A3C",
     glowSoft: "#E8729A",
     type: "原创歌曲",
-    roles: ["作词", "作曲", "编曲", "人声制作"],
+    roles: ["作词", "作曲", "人声制作"],
   },
   {
     id: 3,
@@ -56,7 +56,7 @@ export const works: readonly WorkItem[] = [
     glow: "#5BC4F0",
     glowSoft: "#2A7EB8",
     type: "原创歌曲",
-    roles: ["作词", "作曲", "编曲", "人声制作"],
+    roles: ["作词", "作曲", "人声制作"],
   },
   {
     id: 4,
@@ -67,7 +67,7 @@ export const works: readonly WorkItem[] = [
     glow: "#FF6BB5",
     glowSoft: "#6FE0F0",
     type: "原创歌曲",
-    roles: ["作词", "作曲", "编曲", "人声制作"],
+    roles: ["作词", "作曲", "人声制作"],
   },
   {
     id: 5,
