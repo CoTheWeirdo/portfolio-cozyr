@@ -1,0 +1,18 @@
+/**
+ * PortfolioNav only — hit-area expand for 听见 / 成形 / 我.
+ * Does not change visible layout (no padding/size/gap changes on the link).
+ */
+
+.nav__links .fx-link {
+  position: relative;
+}
+
+/*
+ * Invisible hit pad around each link box.
+ * Vertical + horizontal both 8px so neighbors (gap ≈ 17.6px) never overlap.
+ */
+.nav__links .fx-link::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+}

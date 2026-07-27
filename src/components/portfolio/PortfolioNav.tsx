@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { REVEAL_DELAY, useIntro } from "@/components/portfolio/IntroOrchestrator";
+import "./PortfolioNav.css";
 
 const links = [
   { href: "/works", label: "听见", note: "♪" },
