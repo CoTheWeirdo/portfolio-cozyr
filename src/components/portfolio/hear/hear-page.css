@@ -821,6 +821,134 @@ a.hear-side__foot-link {
   }
 }
 
+/* ——— Side A only: SESSION NOTE + ORIGINAL MASTER ——— */
+.hear-side--a .hear-side-a-panel {
+  min-width: 0;
+  width: 100%;
+}
+
+.hear-side--a .hear-side-a-session-note {
+  margin-top: 1.35rem;
+  min-height: 5.6rem;
+  max-width: 100%;
+}
+
+.hear-side--a .hear-side-a-session-note__inner {
+  display: grid;
+  grid-template-rows: 1.1em 1.45em 2.7em;
+  row-gap: 0.28rem;
+  min-height: 5.2rem;
+  animation: hear-side-a-session-in 280ms ease both;
+}
+
+.hear-side--a .hear-side-a-session-note__label {
+  margin: 0;
+  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: rgba(185, 180, 216, 0.42);
+  white-space: nowrap;
+}
+
+.hear-side--a .hear-side-a-session-note__title {
+  margin: 0;
+  font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: rgba(237, 233, 223, 0.82);
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hear-side--a .hear-side-a-session-note__copy {
+  margin: 0;
+  font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0.01em;
+  color: rgba(214, 210, 200, 0.62);
+  line-height: 1.55;
+  max-width: 36em;
+  overflow: hidden;
+}
+
+.hear-side--a .hear-side-a-master-label {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+  pointer-events: none;
+}
+
+.hear-side--a .hear-side-a-master-label__text {
+  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-size: 0.52rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: rgba(237, 233, 223, 0.62);
+  text-transform: uppercase;
+}
+
+.hear-side--a .hear-side-a-master-label__num {
+  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: rgba(237, 233, 223, 0.78);
+}
+
+@keyframes hear-side-a-session-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1023px) {
+  .hear-side--a .hear-side-a-session-note {
+    margin-top: 1.15rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .hear-side--a .hear-side-a-session-note {
+    min-height: 5.9rem;
+  }
+
+  .hear-side--a .hear-side-a-session-note__inner {
+    min-height: 5.5rem;
+  }
+
+  .hear-side--a .hear-side-a-session-note__copy {
+    font-size: 0.78rem;
+    max-width: 100%;
+  }
+
+  .hear-side--a .hear-side-a-master-label {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hear-side--a .hear-side-a-session-note__inner {
+    animation: none;
+  }
+}
+
 /* ——— Side B only (scoped) ——— */
 .hear-side--b .hear-sideb-title {
   display: flex;

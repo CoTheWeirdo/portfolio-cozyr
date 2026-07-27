@@ -18,6 +18,16 @@ const SIDE_A_DURATIONS: Record<number, string> = {
   6: "03:38", // 浪漫因子
 };
 
+/** Session notes keyed by existing work id — copy locked */
+const SIDE_A_SESSION_NOTES: Record<number, string> = {
+  1: "在秩序彻底建立以前，先保留一点失控。",
+  2: "把那个夏天，写成一种可以被尝到的味道。",
+  3: "让旋律比语言更早暴露情绪。",
+  4: "有些问题没有答案，所以被留在了副歌里。",
+  5: "不再把情绪压低，让它直接冲出来。",
+  6: "浪漫不是一句话，是声音里反复出现的细节。",
+};
+
 type HearSideAProps = {
   works: readonly WorkItem[];
   selectedId: number;
@@ -43,6 +53,9 @@ export default function HearSideA({
 }: HearSideAProps) {
   const reduceMotion = useReducedMotion();
   const selected = works.find((w) => w.id === selectedId) ?? works[0];
+  const selectedNum = pad2(selected.id);
+  const sessionNote =
+    SIDE_A_SESSION_NOTES[selected.id] ?? SIDE_A_SESSION_NOTES[works[0].id];
 
   return (
     <section className="hear-side hear-side--a" aria-labelledby="hear-side-a-title">
@@ -87,6 +100,14 @@ export default function HearSideA({
                   sizes="(max-width: 1023px) 72vw, 22rem"
                   priority
                 />
+                <div className="hear-side-a-master-label" aria-hidden="true">
+                  <span className="hear-side-a-master-label__text">
+                    ORIGINAL MASTER
+                  </span>
+                  <span className="hear-side-a-master-label__num">
+                    {selectedNum} / 06
+                  </span>
+                </div>
               </div>
               <div className="hear-side__now-body">
                 <h3 className="hear-side__now-title">
@@ -104,51 +125,66 @@ export default function HearSideA({
           </AnimatePresence>
         </div>
 
-        <ol className="hear-tracklist" aria-label="A 面曲目表">
-          {works.map((work, index) => {
-            const active = work.id === selectedId;
-            const playing = work.id === playingId;
-            const label = playing
-              ? `Ⅱ ${pad2(Math.min(20, Math.floor(clipElapsed)))}s`
-              : "试听20s";
+        <div className="hear-side-a-panel">
+          <ol className="hear-tracklist" aria-label="A 面曲目表">
+            {works.map((work, index) => {
+              const active = work.id === selectedId;
+              const playing = work.id === playingId;
+              const label = playing
+                ? `Ⅱ ${pad2(Math.min(20, Math.floor(clipElapsed)))}s`
+                : "试听20s";
 
-            return (
-              <li
-                key={work.id}
-                className={`hear-track${active ? " is-active" : ""}${playing ? " is-playing" : ""}`}
-                onClick={() => onSelect(work.id)}
-              >
-                <span className="hear-track__num" aria-hidden>
-                  {pad2(index + 1)}
-                </span>
-                <span className="hear-track__name">{work.label}</span>
-                <span className="hear-track__dur">{SIDE_A_DURATIONS[work.id] ?? "—:—"}</span>
-                <button
-                  type="button"
-                  className="hear-track__audition"
-                  aria-label={
-                    playing
-                      ? `暂停 ${work.label} 试听`
-                      : `试听 ${work.label} 20秒`
-                  }
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    onToggleAudition(work.id);
-                  }}
+              return (
+                <li
+                  key={work.id}
+                  className={`hear-track${active ? " is-active" : ""}${playing ? " is-playing" : ""}`}
+                  onClick={() => onSelect(work.id)}
                 >
-                  {label}
-                </button>
-                {playing ? (
-                  <span
-                    className="hear-track__progress"
-                    style={{ transform: `scaleX(${clipProgress})` }}
-                    aria-hidden
-                  />
-                ) : null}
-              </li>
-            );
-          })}
-        </ol>
+                  <span className="hear-track__num" aria-hidden>
+                    {pad2(index + 1)}
+                  </span>
+                  <span className="hear-track__name">{work.label}</span>
+                  <span className="hear-track__dur">{SIDE_A_DURATIONS[work.id] ?? "—:—"}</span>
+                  <button
+                    type="button"
+                    className="hear-track__audition"
+                    aria-label={
+                      playing
+                        ? `暂停 ${work.label} 试听`
+                        : `试听 ${work.label} 20秒`
+                    }
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onToggleAudition(work.id);
+                    }}
+                  >
+                    {label}
+                  </button>
+                  {playing ? (
+                    <span
+                      className="hear-track__progress"
+                      style={{ transform: `scaleX(${clipProgress})` }}
+                      aria-hidden
+                    />
+                  ) : null}
+                </li>
+              );
+            })}
+          </ol>
+
+          <aside
+            className="hear-side-a-session-note"
+            aria-label="Session note"
+          >
+            <div key={selected.id} className="hear-side-a-session-note__inner">
+              <p className="hear-side-a-session-note__label">
+                SESSION NOTE / {selectedNum}
+              </p>
+              <p className="hear-side-a-session-note__title">{selected.label}</p>
+              <p className="hear-side-a-session-note__copy">{sessionNote}</p>
+            </div>
+          </aside>
+        </div>
       </div>
 
       <footer className="hear-side__foot">
