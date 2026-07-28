@@ -422,48 +422,84 @@ export default function ProcessAudioExperience() {
                 key={slice.id}
                 className={`${styles.selectedItem}${mirrored ? ` ${styles.selectedItemMirror}` : ` ${styles.selectedItemLeft}`}`}
               >
-                <div className={styles.selectedMeta}>
-                  <span className={styles.selectedLabel}>{slice.label}</span>
-                  <span className={styles.sliceRange}>{slice.rangeLabel}</span>
-                </div>
+                <div className={styles.selectedBandFace} aria-hidden="true" />
 
-                <div className={styles.selectedLyric}>
-                  {slice.lyrics.map((line, lineIndex) => (
-                    <p key={`${slice.id}-${lineIndex}`}>{line}</p>
-                  ))}
-                </div>
-
-                <div className={styles.selectedPlayer}>
-                  <button
-                    type="button"
-                    className={`${styles.slicePlay}${isPlaying ? ` ${styles.slicePlayActive}` : ""}`}
-                    aria-label={
-                      isPlaying
-                        ? `暂停 ${slice.label}`
-                        : `播放 ${slice.label}`
-                    }
-                    onClick={() => {
-                      void toggleSlice(slice.id);
-                    }}
-                  >
-                    <span className={styles.slicePlayIcon} aria-hidden="true" />
-                  </button>
-
-                  <div className={styles.sliceTrack} aria-hidden="true">
-                    <span className={styles.sliceTrackGrain} />
-                    <span
-                      className={styles.sliceTrackFill}
-                      style={{ transform: `scaleX(${progress})` }}
-                    />
-                    <span
-                      className={styles.sliceTrackThumb}
-                      style={{ left: `${progress * 100}%` }}
-                    />
+                <div className={styles.selectedBandBody}>
+                  <div className={styles.selectedMeta}>
+                    <span className={styles.selectedLabel}>{slice.label}</span>
+                    <span className={styles.sliceRange}>{slice.rangeLabel}</span>
                   </div>
 
-                  <p className={styles.sliceTime}>
-                    {formatTime(elapsed)} / {slice.durationLabel}
-                  </p>
+                  <div className={styles.selectedLyric}>
+                    {slice.id === "slice-01" ? (
+                      <>
+                        <div className={styles.selectedLyricBlock}>
+                          <p className={styles.selectedLyricPair}>
+                            <span>{slice.lyrics[0]}</span>
+                            <span>{slice.lyrics[1]}</span>
+                          </p>
+                          <p>{slice.lyrics[2]}</p>
+                        </div>
+                        <div className={styles.selectedLyricBlock}>
+                          <p className={styles.selectedLyricPair}>
+                            <span>{slice.lyrics[3]}</span>
+                            <span>{slice.lyrics[4]}</span>
+                          </p>
+                          <p className={styles.selectedLyricLast}>{slice.lyrics[5]}</p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className={styles.selectedLyricBlock}>
+                          <p>{slice.lyrics[0]}</p>
+                          <p>{slice.lyrics[1]}</p>
+                        </div>
+                        <div className={styles.selectedLyricBlock}>
+                          <p>{slice.lyrics[2]}</p>
+                          <p className={styles.selectedLyricLast}>{slice.lyrics[3]}</p>
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  <div className={styles.selectedPlayer}>
+                    <button
+                      type="button"
+                      className={`${styles.slicePlay}${isPlaying ? ` ${styles.slicePlayActive}` : ""}`}
+                      aria-label={
+                        isPlaying
+                          ? `暂停 ${slice.label}`
+                          : `播放 ${slice.label}`
+                      }
+                      onClick={() => {
+                        void toggleSlice(slice.id);
+                      }}
+                    >
+                      <span className={styles.slicePlayIcon} aria-hidden="true" />
+                    </button>
+
+                    <div className={styles.sliceSeam} aria-hidden="true">
+                      <span className={styles.sliceSeamBase} />
+                      <span
+                        className={styles.sliceSeamFill}
+                        style={{ width: `${progress * 100}%` }}
+                      />
+                      <span
+                        className={styles.sliceSeamThumb}
+                        style={{ left: `${progress * 100}%` }}
+                      />
+                    </div>
+
+                    <div className={styles.sliceTime}>
+                      <span className={styles.sliceTimeNow}>
+                        {formatTime(elapsed)}
+                      </span>
+                      <span className={styles.sliceTimeRule} />
+                      <span className={styles.sliceTimeDur}>
+                        {slice.durationLabel}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </article>
             );
@@ -501,7 +537,7 @@ export default function ProcessAudioExperience() {
                 src={COVER}
                 alt=""
                 fill
-                sizes="(max-width: 767px) 42vw, 11rem"
+                sizes="(max-width: 767px) 58vw, 280px"
                 className={styles.coverImg}
               />
             </div>
