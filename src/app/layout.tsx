@@ -1,18 +1,29 @@
 import type { Metadata, Viewport } from "next";
-import { Figtree, Instrument_Serif } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const instrumentSerif = Instrument_Serif({
+const instrumentSerif = localFont({
+  src: [
+    {
+      path: "./fonts/instrument-serif-regular-latin.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/instrument-serif-italic-latin.woff2",
+      weight: "400",
+      style: "italic",
+    },
+  ],
   variable: "--font-instrument-serif",
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
   display: "swap",
 });
 
-const figtree = Figtree({
+const figtree = localFont({
+  src: "./fonts/figtree-latin.woff2",
   variable: "--font-figtree",
-  subsets: ["latin"],
+  weight: "300 900",
+  style: "normal",
   display: "swap",
 });
 
