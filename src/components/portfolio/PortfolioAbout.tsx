@@ -192,7 +192,7 @@ export default function PortfolioAbout() {
               <div className="about-avatar-slot">
                 <Image
                   className="about-avatar-slot__portrait"
-                  src="/about/avatar-animated.png"
+                  src="/about/avatar-animated-wide-rounded-shoulder-v2.png"
                   alt=""
                   fill
                   sizes="12rem"
