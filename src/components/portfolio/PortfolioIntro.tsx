@@ -274,7 +274,7 @@ function IntroStage() {
           >
             <Link className="intro-stage__cta" href="/works">
               <span className="intro-stage__cta-note" aria-hidden>♪</span>
-              探索我的作品
+              听见我的声音
               <span aria-hidden>→</span>
             </Link>
             <a
