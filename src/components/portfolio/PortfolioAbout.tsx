@@ -10,26 +10,26 @@ import PortfolioShell from "@/components/portfolio/PortfolioShell";
 const FOCUS_NOTES = [
   {
     id: "voice",
-    vague: "这里听起来有点假。",
+    vague: "人声露馅了",
     en: "SOMETHING FEELS ARTIFICIAL",
     answer:
-      "我会先听人声：咬字有没有被拉扯，换气是不是出现在不自然的位置，句尾和颤音是否像真的人在控制。",
+      "我先找它在哪儿露馅：咬字被拉扯了，换气忘了来，还是每个句尾都收得像用同一把尺子量过。",
     signals: ["咬字", "换气", "句尾", "颤音"],
   },
   {
     id: "style",
-    vague: "好像不是这个风格。",
+    vague: "风格串台了",
     en: "THE STYLE DOESN'T QUITE LAND",
     answer:
-      "问题往往不在某一个音色，而在整套语汇没有对上。鼓组的力度、和声走向和乐器进入的方式，可能分别来自不同的审美。",
+      "鼓在一首歌里，和声在另一首歌里，配器又从第三首歌路过。每层单听都没错，放在一起却没说同一种话。",
     signals: ["鼓组", "和声", "配器", "音色"],
   },
   {
     id: "emotion",
-    vague: "就是没什么感觉。",
+    vague: "情绪掉线了",
     en: "THE EMOTION ISN'T THERE YET",
     answer:
-      "我会比较旋律、人声和编曲是不是在表达同一种情绪。有时关键词写对了，真正的情绪却没有落在声音里。",
+      "歌词已经很难过了，旋律、人声和动态却像没收到通知。字写对了，不代表情绪真的到了。",
     signals: ["旋律", "演唱", "动态", "情绪"],
   },
 ] as const;
@@ -38,20 +38,20 @@ const LISTENING_NOTES = [
   {
     index: "01",
     en: "FIRST LISTEN",
-    title: "先别急着挑细节",
-    copy: "第一遍先听它想把人带到哪里。方向没站稳，后面的精致也很难救回来。",
+    title: "先让它唱完",
+    copy: "第一遍不暂停，也不急着抓错。先听这首歌到底想把我带去哪。",
   },
   {
     index: "02",
     en: "LISTEN AGAIN",
-    title: "找到让我出戏的那一下",
-    copy: "可能是一个咬字、一件乐器，也可能是情绪突然断掉。先记住身体比语言更早发现的地方。",
+    title: "耳朵皱眉的那一秒",
+    copy: "哪一秒突然让我出戏，就先记下来。可能是一口气、一个鼓点，或者一句话没唱到心里。",
   },
   {
     index: "03",
     en: "WRITE IT DOWN",
-    title: "把问题写成下一步",
-    copy: "不止留下“奇怪”或“不好听”。说明问题出现在哪里、影响了什么，下一版才知道往哪走。",
+    title: "给“不对劲”起个名字",
+    copy: "“不好听”没法直接拿去改。是咬字、配器、动态还是情绪？说具体了，下一版才知道往哪动。",
   },
 ] as const;
 
@@ -60,46 +60,50 @@ const LYRIC_DRAFTS = [
     title: "爱与厌",
     year: "2025",
     src: "/about/studio/lyric-love-hate-2025.png",
+    width: 562,
+    height: 1024,
   },
   {
     title: "褪黑素",
     year: "2026",
     src: "/about/studio/lyric-melatonin-2026.png",
+    width: 794,
+    height: 1250,
   },
   {
     title: "融化",
     year: "2025",
     src: "/about/studio/lyric-melt-2025.png",
+    width: 545,
+    height: 1024,
   },
   {
-    title: "没啥灵感",
+    title: "橘子汽水",
     year: "2022",
     src: "/about/studio/lyric-no-idea-2022.png",
+    width: 526,
+    height: 1024,
   },
   {
-    title: "早期片段 01",
-    year: "ARCHIVE",
+    title: "雨",
+    year: "2024",
     src: "/process/lyrics-01.png",
+    width: 547,
+    height: 1024,
   },
   {
-    title: "早期片段 02",
-    year: "ARCHIVE",
-    src: "/process/lyrics-02.png",
-  },
-  {
-    title: "早期片段 03",
-    year: "ARCHIVE",
+    title: "I don’t fxxking care",
+    year: "2024",
     src: "/process/lyrics-03.png",
+    width: 520,
+    height: 1024,
   },
   {
-    title: "早期片段 04",
-    year: "ARCHIVE",
+    title: "Utopia乌托邦",
+    year: "2023",
     src: "/process/lyrics-04.png",
-  },
-  {
-    title: "早期片段 05",
-    year: "ARCHIVE",
-    src: "/process/lyrics-05.png",
+    width: 523,
+    height: 1024,
   },
 ] as const;
 
@@ -154,16 +158,14 @@ export default function PortfolioAbout() {
             {...reveal}
             transition={{ duration: 0.72, ease: [0.2, 0.8, 0.2, 1] }}
           >
-            <p className="about-hero__kicker">张韵蕊 · 独立唱作人 / 音乐制作人</p>
+            <p className="about-hero__kicker">张韵蕊 · 独立音乐人 / 音乐制作人 / AI 音乐数据分析</p>
             <h1 id="about-title" className="about-hero__title">
-              我做歌，
+              我理解创作，
               <br />
-              <em>也挑歌里的毛病。</em>
+              <em>也擅长把听感变成判断。</em>
             </h1>
             <p className="about-hero__intro">
-              写词、编曲、录人声、做混音，我都自己走过一遍。
-              学数据分析以后，我开始习惯把“这里不太对”继续往下拆：
-              是人声不自然，风格跑了，还是情绪没有落到位？
+              从写词、编曲到录音与混音，我熟悉一首歌从创作到成品的全过程。数据分析背景让我习惯把“听起来不太对”的直觉拆解为具体问题：人声是否自然、风格是否偏移、情绪是否准确传达。对我而言，AI 音乐评测，就是把这些听感转化为可描述、可比较、可验证的判断。
             </p>
           </motion.div>
 
@@ -391,7 +393,7 @@ export default function PortfolioAbout() {
                 <span id="about-lyrics-title">LYRIC DRAFTS</span>
                 <strong>歌词草稿</strong>
               </div>
-              <small>09 PAGES / 2022 — 2026</small>
+              <small>07 PAGES / 2022 — 2026</small>
             </header>
 
             <div className="about-lyrics__stack" role="group" aria-label="选择一份歌词草稿">
@@ -407,6 +409,7 @@ export default function PortfolioAbout() {
                     className={`about-lyrics__sheet about-lyrics__sheet--${offset}${
                       isActive ? " is-active" : ""
                     }`}
+                    style={{ aspectRatio: `${draft.width} / ${draft.height}` }}
                     aria-hidden={offset > 3}
                     aria-label={
                       isActive
@@ -427,8 +430,10 @@ export default function PortfolioAbout() {
                     <Image
                       src={draft.src}
                       alt=""
-                      fill
+                      width={draft.width}
+                      height={draft.height}
                       sizes="(max-width: 700px) 64vw, (max-width: 1100px) 38vw, 22vw"
+                      unoptimized
                     />
                     <span>
                       {draft.year} / {draft.title}
@@ -542,36 +547,33 @@ export default function PortfolioAbout() {
         <div className="about-contact__layout">
           <div className="about-contact__statement">
             <p>
-              <span>我想把做音乐时练出来的耳朵，</span>
-              <span>和数据分析的训练，</span>
-              <span>一起带到这个岗位里。</span>
+              <span>我在意的不只是音乐好不好听，</span>
+              <span>也在意听感上的差异能不能被记录、比较和分析。</span>
             </p>
-            <span>想继续聊的话，给我写信。</span>
           </div>
 
           <div className="about-contact__actions">
-            <a className="about-contact__primary" href="mailto:2312464576@qq.com">
-              <span>给我写信</span>
-              <strong>↗</strong>
-            </a>
             <a
               className="about-contact__link"
-              href="https://music.163.com/#/artist?id=35141857"
-              target="_blank"
-              rel="noreferrer"
+              href="/works"
             >
               先听一首歌 <span aria-hidden="true">↗</span>
             </a>
             <Link className="about-contact__link" href="/">
               回到首页 <span aria-hidden="true">←</span>
             </Link>
+            <a
+              className="about-contact__link about-contact__email"
+              href="mailto:2312464576@qq.com"
+            >
+              2312464576@qq.com <span aria-hidden="true">↗</span>
+            </a>
           </div>
         </div>
 
         <div className="about-contact__foot">
           <span>Yz香菜 · 张韵蕊</span>
           <span>音乐制作 / AI 音乐评测 / 音乐数据</span>
-          <a href="mailto:2312464576@qq.com">2312464576@qq.com</a>
         </div>
       </footer>
     </PortfolioShell>

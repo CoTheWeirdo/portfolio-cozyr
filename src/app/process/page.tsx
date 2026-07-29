@@ -1,8 +1,10 @@
 import Image from "next/image";
 import PortfolioShell from "@/components/portfolio/PortfolioShell";
 import ProcessAudioExperience from "./ProcessAudioExperience";
+import TasteAudioButton from "./TasteAudioButton";
 import styles from "./process-page.module.css";
 
+// The process case study stays server-rendered; audio controls hydrate separately.
 const COVER = "/assets/works/auto-renewal/cover.png";
 
 /** Top → bottom: texture down to emotion */
@@ -21,9 +23,24 @@ const HERO_NOTES = [
 ] as const;
 
 const VERSIONS = [
-  { id: "V01", note: "偏离", tone: "dim", ghosts: 5 },
-  { id: "V02", note: "接近", tone: "mid", ghosts: 4 },
-  { id: "V03", note: "留下", tone: "final", ghosts: 3 },
+  {
+    id: "V01",
+    note: "偏离",
+    tone: "dim",
+    audio: "/audio/auto-renewal/version-deviated.mp3",
+  },
+  {
+    id: "V02",
+    note: "接近",
+    tone: "mid",
+    audio: "/audio/auto-renewal/version-close.mp3",
+  },
+  {
+    id: "V03",
+    note: "留下",
+    tone: "final",
+    audio: "/audio/auto-renewal/version-retained.mp3",
+  },
 ] as const;
 
 const OBSERVE = ["旋律记忆点", "人声自然度", "情绪贴合度"] as const;
@@ -97,88 +114,134 @@ export default function ProcessPage() {
 
         <section className={styles.taste} aria-labelledby="process-taste-title">
           <header className={styles.tasteHead}>
-            <p className={styles.tasteEn} aria-hidden="true">
-              TASTE TEST / SAME SECTION · SAME LENGTH
-            </p>
-            <h2 id="process-taste-title" className={styles.tasteTitle}>
-              版本试味
-            </h2>
+            <div className={styles.tasteHeading}>
+              <p className={styles.tasteEn} aria-hidden="true">
+                TASTE TEST / SAME SOURCE
+              </p>
+              <h2 id="process-taste-title" className={styles.tasteTitle}>
+                版本试味
+              </h2>
+              <p className={styles.tasteMeta} aria-hidden="true">
+                ONE RECIPE / THREE RESULTS
+              </p>
+            </div>
             <p className={styles.tasteLead}>
               同一份配方，三次试味。
               <br />
-              把三个版本放在一起，
-              <br />
-              差异才真正能够被听见。
+              把差异放在同一条线上，选择才真正能够被听见。
             </p>
-            <p className={styles.tasteMeta} aria-hidden="true">
-              ONE RECIPE / THREE RESULTS
-            </p>
+            <div className={styles.tasteCount} aria-hidden="true">
+              <strong>03</strong>
+              <span>GENERATED CUTS</span>
+            </div>
           </header>
 
-          <div className={styles.versionGrid}>
-            {VERSIONS.map((version, index) => (
-              <article
-                key={version.id}
-                className={`${styles.version} ${styles[`version_${version.tone}`]}`}
-              >
-                <header className={styles.versionHead}>
-                  <span className={styles.versionId}>{version.id}</span>
-                  <span className={styles.versionNote}>{version.note}</span>
-                </header>
+          <div className={styles.compareDesk}>
+            <div className={styles.compareTop} aria-hidden="true">
+              <span className={styles.liveState}>
+                <i />
+                COMPARISON MONITOR
+              </span>
+              <span>20 SEC / SELECTED MOMENTS</span>
+            </div>
 
-                <div className={styles.versionVisual} aria-hidden="true">
-                  <div className={styles.versionGhosts}>
-                    {Array.from({ length: version.ghosts }, (_, ghostIndex) => (
-                      <span
-                        key={ghostIndex}
-                        className={styles.versionGhost}
-                        style={{ ["--g" as string]: String(ghostIndex) }}
-                      />
-                    ))}
+            <div className={styles.compareBody}>
+              <aside className={styles.sourcePanel} aria-label="试听素材">
+                <div className={styles.sourceArtwork}>
+                  <div className={styles.coverEchoes} aria-hidden="true">
+                    <span />
+                    <span />
+                    <span />
                   </div>
-                  <div className={styles.cover}>
+                  <div className={styles.sourceCover}>
                     <Image
                       src={COVER}
-                      alt=""
+                      alt="《自动续费》封面"
                       fill
-                      sizes="(max-width: 860px) 42vw, 11vw"
+                      sizes="(max-width: 700px) 62vw, 240px"
                       className={styles.coverImg}
                     />
                   </div>
                 </div>
+                <div className={styles.sourceCaption}>
+                  <span>SOURCE / 72 BPM</span>
+                  <strong>自动续费</strong>
+                  <p>深夜 R&amp;B · 不同段落 · 同一时长</p>
+                </div>
+              </aside>
 
-                <div className={styles.playRow}>
-                  <span
-                    className={styles.playDot}
-                    aria-disabled="true"
-                    aria-hidden="true"
-                  />
-                  <div className={styles.wave} aria-hidden="true">
-                    {WAVE_HEIGHTS[index].map((height, barIndex) => (
-                      <span
-                        key={barIndex}
-                        className={styles.waveBar}
-                        style={{ height: `${height}%` }}
-                      />
-                    ))}
-                  </div>
+              <div className={styles.versionRack}>
+                <div className={styles.rackScale} aria-hidden="true">
+                  <span>VERSION</span>
+                  <span>SIGNAL / 00:20</span>
+                  <span>DECISION</span>
                 </div>
 
-                <p className={styles.time}>00:00 / 00:12</p>
-                <p className={styles.clipTag}>SAME SECTION / SAME LENGTH</p>
-
-                <ul className={styles.observe}>
-                  {OBSERVE.map((label) => (
-                    <li key={label}>
-                      <span>{label}</span>
-                      <span className={styles.observeLine} aria-hidden="true">
-                        —————
+                {VERSIONS.map((version, index) => (
+                  <article
+                    key={version.id}
+                    className={`${styles.version} ${styles[`version_${version.tone}`]}`}
+                  >
+                    <header className={styles.versionHead}>
+                      <span className={styles.versionId}>{version.id}</span>
+                      <span className={styles.versionIndex}>
+                        0{index + 1} / 03
                       </span>
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            ))}
+                    </header>
+
+                    <div className={styles.versionSignal}>
+                      <TasteAudioButton
+                        src={version.audio}
+                        label={`${version.id} ${version.note}版本`}
+                        className={styles.playDot}
+                        activeClassName={styles.playDotActive}
+                      />
+                      <div className={styles.wave} aria-hidden="true">
+                        {WAVE_HEIGHTS[index].map((height, barIndex) => (
+                          <span
+                            key={barIndex}
+                            className={styles.waveBar}
+                            style={{ height: `${height}%` }}
+                          />
+                        ))}
+                      </div>
+                      <span className={styles.time}>00:20</span>
+                    </div>
+
+                    <div className={styles.versionDecision}>
+                      <span className={styles.versionNote}>{version.note}</span>
+                      {version.tone === "final" ? (
+                        <span className={styles.keepTag}>RETAINED</span>
+                      ) : (
+                        <span className={styles.passTag}>PASS</span>
+                      )}
+                    </div>
+                  </article>
+                ))}
+
+                <footer className={styles.listenFor}>
+                  <span>LISTEN FOR</span>
+                  <ul>
+                    {OBSERVE.map((label) => (
+                      <li key={label}>
+                        <i aria-hidden="true" />
+                        {label}
+                      </li>
+                    ))}
+                  </ul>
+                </footer>
+              </div>
+            </div>
+
+            <div className={styles.compareFoot} aria-hidden="true">
+              <span>GENERATE</span>
+              <i />
+              <span>COMPARE</span>
+              <i />
+              <span>ADJUST</span>
+              <i />
+              <strong>RETAIN / V03</strong>
+            </div>
           </div>
         </section>
 

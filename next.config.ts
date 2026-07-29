@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  /* Keep framework defaults for this static portfolio. */
 };
 
 export default nextConfig;

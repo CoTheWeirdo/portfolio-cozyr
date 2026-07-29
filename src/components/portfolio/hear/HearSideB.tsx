@@ -21,7 +21,10 @@ function listeningLine(trackId: string): string {
   if (trackId === autoRenewalCase.id) {
     return "生活自动续费，我还没点同意";
   }
-  return "20秒试听片段";
+  if (trackId === "hou") {
+    return "把异地的想念，写成一场漫长的等候";
+  }
+  return "让蓝色情绪，在 R&B 的律动里再次回潮";
 }
 
 const LISTENING_FINGERPRINTS: Record<

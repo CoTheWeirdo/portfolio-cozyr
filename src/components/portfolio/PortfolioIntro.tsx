@@ -52,9 +52,9 @@ const ease = [0.22, 1, 0.36, 1] as const;
 function IntroStage() {
   const reduceMotion = useReducedMotion();
   const nameFontSize = useFuzzyBreakpointSize(
-    "clamp(58px, 5.4vw, 88px)",
-    "clamp(50px, 7vw, 70px)",
-    "clamp(44px, 13vw, 60px)",
+    "clamp(54px, 5.05vw, 82px)",
+    "clamp(47px, 6.55vw, 65px)",
+    "clamp(41px, 12.1vw, 56px)",
   );
   const { reveal, playIntro, ready } = useIntro();
   const gate = ready && (reveal || !playIntro);
@@ -183,7 +183,7 @@ function IntroStage() {
 
           <div className="intro-stage__masthead">
             <h1 id="intro-title" className="sr-only">
-              张韵蕊｜音乐制作、AI 音乐实验与数据评测
+              你好，我是张韵蕊。｜音乐制作、AI 音乐实验与数据评测
             </h1>
             <motion.div
               className="intro-stage__title"
@@ -193,25 +193,47 @@ function IntroStage() {
               variants={enter.title}
             >
               {reduceMotion ? (
-                <span className="intro-stage__name">张韵蕊</span>
+                <>
+                  <span className="intro-stage__name">你好，</span>
+                  <span className="intro-stage__name">我是张韵蕊。</span>
+                </>
               ) : (
-                <FuzzyText
-                  className="intro-stage__fuzzy"
-                  fontSize={nameFontSize}
-                  fontWeight={700}
-                  fontFamily='"Hiragino Sans GB", "PingFang SC", sans-serif'
-                  color="#b9b4d8"
-                  baseIntensity={0.16}
-                  hoverIntensity={0.55}
-                  enableHover
-                  fuzzRange={28}
-                  fps={48}
-                  direction="horizontal"
-                  transitionDuration={8}
-                  letterSpacing={4}
-                >
-                  张韵蕊
-                </FuzzyText>
+                <>
+                  <FuzzyText
+                    className="intro-stage__fuzzy"
+                    fontSize={nameFontSize}
+                    fontWeight={700}
+                    fontFamily='"Hiragino Sans GB", "PingFang SC", sans-serif'
+                    color="#b9b4d8"
+                    baseIntensity={0.16}
+                    hoverIntensity={0.55}
+                    enableHover
+                    fuzzRange={28}
+                    fps={48}
+                    direction="horizontal"
+                    transitionDuration={8}
+                    letterSpacing={4}
+                  >
+                    你好，
+                  </FuzzyText>
+                  <FuzzyText
+                    className="intro-stage__fuzzy"
+                    fontSize={nameFontSize}
+                    fontWeight={700}
+                    fontFamily='"Hiragino Sans GB", "PingFang SC", sans-serif'
+                    color="#b9b4d8"
+                    baseIntensity={0.16}
+                    hoverIntensity={0.55}
+                    enableHover
+                    fuzzRange={28}
+                    fps={48}
+                    direction="horizontal"
+                    transitionDuration={8}
+                    letterSpacing={4}
+                  >
+                    我是张韵蕊。
+                  </FuzzyText>
+                </>
               )}
             </motion.div>
             <motion.p

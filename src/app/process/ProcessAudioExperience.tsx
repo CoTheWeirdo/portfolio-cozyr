@@ -4,12 +4,17 @@ import Image from "next/image";
 import {
   useCallback,
   useEffect,
-  useEffectEvent,
   useRef,
   useState,
+  type CSSProperties,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import styles from "./process-page.module.css";
+import {
+  claimProcessAudioPlayback,
+  getClaimedProcessAudio,
+  PROCESS_AUDIO_PLAY_EVENT,
+} from "./processAudioEvents";
 
 const AUDIO_SRC = "/audio/auto-renewal/final.m4a";
 const COVER = "/assets/works/auto-renewal/cover.png";
@@ -27,6 +32,7 @@ const SLICES = [
     startSec: 58,
     endSec: 70,
     fadeStartSec: 69,
+    src: "/audio/auto-renewal/selected-slice-01.mp3",
     rangeLabel: "00:58—01:10",
     durationLabel: "00:12",
     lyrics: [
@@ -37,6 +43,33 @@ const SLICES = [
       "又一天",
       "我的人生自动续费",
     ],
+    lyricTimings: [
+      [[0, 0.08], [0.08, 0.22], [0.22, 0.52]],
+      [[0.84, 0.96], [0.96, 1.1], [1.1, 1.36]],
+      [
+        [1.6, 1.74],
+        [1.74, 2],
+        [2, 2.22],
+        [2.22, 2.42],
+        [2.42, 2.68],
+        [2.68, 2.86],
+        [2.86, 3.12],
+        [3.12, 3.58],
+        [3.58, 4.9],
+      ],
+      [[6.86, 7.06], [7.06, 7.26], [7.26, 7.58]],
+      [[7.74, 7.9], [7.9, 8.14], [8.14, 8.42]],
+      [
+        [8.66, 8.81],
+        [8.81, 8.96],
+        [8.96, 9.3],
+        [9.3, 9.68],
+        [9.68, 10.18],
+        [10.18, 10.52],
+        [10.52, 10.8],
+        [10.8, 11.4],
+      ],
+    ],
     wave: [36, 52, 44, 68, 40, 74, 48, 62, 38, 70, 46, 58, 42, 66, 50, 72, 44, 60],
   },
   {
@@ -45,6 +78,7 @@ const SLICES = [
     startSec: 70,
     endSec: 79,
     fadeStartSec: 78,
+    src: "/audio/auto-renewal/selected-slice-02.mp3",
     rangeLabel: "01:10—01:19",
     durationLabel: "00:09",
     lyrics: [
@@ -52,6 +86,53 @@ const SLICES = [
       "其实味道也就差不多",
       "群聊里都在庆祝生活",
       "我打了个笑脸跟着附和",
+    ],
+    lyricTimings: [
+      [
+        [0.9, 1.38],
+        [1.38, 1.54],
+        [1.54, 1.84],
+        [1.84, 2],
+        [2, 2.3],
+        [2.3, 2.5],
+        [2.5, 2.72],
+        [2.72, 2.94],
+        [2.94, 3.24],
+      ],
+      [
+        [3.5, 3.58],
+        [3.58, 3.66],
+        [3.66, 3.8],
+        [3.8, 3.9],
+        [3.9, 4.08],
+        [4.08, 4.24],
+        [4.24, 4.46],
+        [4.46, 4.68],
+        [4.68, 4.9],
+      ],
+      [
+        [5.26, 5.38],
+        [5.38, 5.44],
+        [5.44, 5.58],
+        [5.58, 5.82],
+        [5.82, 6.02],
+        [6.02, 6.26],
+        [6.26, 6.42],
+        [6.42, 6.64],
+        [6.64, 6.86],
+      ],
+      [
+        [7.06, 7.18],
+        [7.18, 7.24],
+        [7.24, 7.3],
+        [7.3, 7.38],
+        [7.38, 7.56],
+        [7.56, 7.78],
+        [7.78, 7.98],
+        [7.98, 8.2],
+        [8.2, 8.44],
+        [8.44, 8.68],
+      ],
     ],
     wave: [42, 58, 50, 66, 44, 72, 48, 60, 40, 68, 52, 56, 46, 70, 54, 62],
   },
@@ -76,8 +157,69 @@ function formatTime(sec: number) {
   return `${pad2(Math.floor(safe / 60))}:${pad2(safe % 60)}`;
 }
 
+function KaraokeLyrics({
+  lines,
+  timings,
+  elapsed,
+  active,
+}: {
+  lines: readonly string[];
+  timings: readonly (readonly (readonly [number, number])[])[];
+  elapsed: number;
+  active: boolean;
+}) {
+  return (
+    <>
+      {lines.map((line, lineIndex) => {
+        const chars = Array.from(line);
+        const charTimings = timings[lineIndex] ?? [];
+
+        return (
+          <p
+            key={`${lineIndex}-${line}`}
+            className={
+              lineIndex === lines.length - 1
+                ? styles.timelineLyricLast
+                : undefined
+            }
+            aria-label={line}
+          >
+            {chars.map((char, charIndex) => {
+              const [start, end] = charTimings[charIndex] ?? [0, 1];
+              const charProgress = active
+                ? Math.min(
+                    1,
+                    Math.max(0, (elapsed - start) / Math.max(0.04, end - start)),
+                  )
+                : 0;
+              const karaokeStyle = {
+                "--karaoke-progress": `${charProgress * 100}%`,
+              } as CSSProperties;
+
+              return (
+                <span
+                  key={`${charIndex}-${char}`}
+                  className={styles.karaokeGlyph}
+                  style={karaokeStyle}
+                  aria-hidden="true"
+                >
+                  <span className={styles.karaokeLyricText}>{char}</span>
+                  <span className={styles.karaokeLyricGlow}>{char}</span>
+                </span>
+              );
+            })}
+          </p>
+        );
+      })}
+    </>
+  );
+}
+
 export default function ProcessAudioExperience() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioByModeRef = useRef<
+    Record<Exclude<Mode, null>, HTMLAudioElement> | null
+  >(null);
   const rafRef = useRef<number | null>(null);
   const modeRef = useRef<Mode>(null);
   const fadingRef = useRef(false);
@@ -89,6 +231,8 @@ export default function ProcessAudioExperience() {
   const [sliceElapsed, setSliceElapsed] = useState(0);
   const [fullTime, setFullTime] = useState(0);
   const [fullDuration, setFullDuration] = useState(FULL_DURATION_FALLBACK);
+  const [selectedSliceId, setSelectedSliceId] =
+    useState<(typeof SLICES)[number]["id"]>("slice-01");
 
   const stopRaf = useCallback(() => {
     if (rafRef.current != null) {
@@ -101,8 +245,8 @@ export default function ProcessAudioExperience() {
     const audio = audioRef.current;
     if (!audio) return;
     fadingRef.current = false;
-    if (!muted) audio.volume = 1;
-  }, [muted]);
+    if (!audio.muted) audio.volume = 1;
+  }, []);
 
   const finishSlice = useCallback(() => {
     const audio = audioRef.current;
@@ -110,15 +254,15 @@ export default function ProcessAudioExperience() {
     fadingRef.current = false;
     if (audio) {
       audio.pause();
-      audio.volume = muted ? 0 : 1;
+      audio.volume = audio.muted ? 0 : 1;
     }
     modeRef.current = null;
     setMode(null);
     setPlaying(false);
     setSliceElapsed(0);
-  }, [muted, stopRaf]);
+  }, [stopRaf]);
 
-  const tick = useEffectEvent(() => {
+  const tick = useCallback(function runTick() {
     const audio = audioRef.current;
     const currentMode = modeRef.current;
     if (!audio || !currentMode || audio.paused) {
@@ -130,7 +274,7 @@ export default function ProcessAudioExperience() {
       if (!seekingRef.current) {
         setFullTime(audio.currentTime);
       }
-      rafRef.current = requestAnimationFrame(() => tick());
+      rafRef.current = requestAnimationFrame(runTick);
       return;
     }
 
@@ -140,17 +284,18 @@ export default function ProcessAudioExperience() {
       return;
     }
 
-    const elapsed = Math.max(0, audio.currentTime - slice.startSec);
+    const elapsed = Math.max(0, audio.currentTime);
     const clipLen = slice.endSec - slice.startSec;
+    const fadeAt = clipLen - (slice.endSec - slice.fadeStartSec);
     setSliceElapsed(Math.min(clipLen, elapsed));
 
-    if (!fadingRef.current && audio.currentTime >= slice.fadeStartSec) {
+    if (!fadingRef.current && audio.currentTime >= fadeAt) {
       fadingRef.current = true;
-      const startVol = muted ? 0 : 1;
+      const startVol = audio.muted ? 0 : 1;
       const startAt = performance.now();
       const durationMs = Math.max(
         80,
-        (slice.endSec - Math.min(audio.currentTime, slice.endSec)) * 1000,
+        (clipLen - Math.min(audio.currentTime, clipLen)) * 1000,
       );
 
       const tickFade = (now: number) => {
@@ -159,11 +304,11 @@ export default function ProcessAudioExperience() {
           return;
         }
         const t = Math.min(1, (now - startAt) / durationMs);
-        if (!muted) audio.volume = Math.max(0, startVol * (1 - t));
+        if (!audio.muted) audio.volume = Math.max(0, startVol * (1 - t));
         setSliceElapsed(
-          Math.min(clipLen, Math.max(0, audio.currentTime - slice.startSec)),
+          Math.min(clipLen, Math.max(0, audio.currentTime)),
         );
-        if (t < 1 && audio.currentTime < slice.endSec) {
+        if (t < 1 && audio.currentTime < clipLen) {
           rafRef.current = requestAnimationFrame(tickFade);
           return;
         }
@@ -174,13 +319,13 @@ export default function ProcessAudioExperience() {
       return;
     }
 
-    if (!fadingRef.current && audio.currentTime >= slice.endSec) {
+    if (!fadingRef.current && audio.currentTime >= clipLen) {
       finishSlice();
       return;
     }
 
-    rafRef.current = requestAnimationFrame(() => tick());
-  });
+    rafRef.current = requestAnimationFrame(runTick);
+  }, [finishSlice]);
 
   const ensureLoop = useCallback(() => {
     if (rafRef.current == null && modeRef.current && audioRef.current && !audioRef.current.paused) {
@@ -189,16 +334,25 @@ export default function ProcessAudioExperience() {
   }, [tick]);
 
   useEffect(() => {
-    const audio = new Audio(AUDIO_SRC);
-    audio.preload = "metadata";
-    audioRef.current = audio;
+    const audios: Record<Exclude<Mode, null>, HTMLAudioElement> = {
+      "slice-01": new Audio(SLICES[0].src),
+      "slice-02": new Audio(SLICES[1].src),
+      full: new Audio(AUDIO_SRC),
+    };
+    const allAudios = Object.values(audios);
+    audioByModeRef.current = audios;
+    audioRef.current = audios.full;
 
     const onMeta = () => {
-      if (Number.isFinite(audio.duration) && audio.duration > 0) {
-        setFullDuration(audio.duration);
+      if (
+        Number.isFinite(audios.full.duration) &&
+        audios.full.duration > 0
+      ) {
+        setFullDuration(audios.full.duration);
       }
     };
     const onEnded = () => {
+      const activeAudio = audioRef.current;
       stopRaf();
       restoreVolume();
       modeRef.current = null;
@@ -206,37 +360,71 @@ export default function ProcessAudioExperience() {
       setPlaying(false);
       setFullTime(0);
       setSliceElapsed(0);
-      audio.currentTime = 0;
+      if (activeAudio) activeAudio.currentTime = 0;
+    };
+    const stopForAnotherAudio = (event: Event) => {
+      if (allAudios.includes(getClaimedProcessAudio(event))) return;
+
+      stopRaf();
+      fadingRef.current = false;
+      allAudios.forEach((audio) => {
+        audio.pause();
+        audio.volume = audio.muted ? 0 : 1;
+      });
+      if (modeRef.current === "full") {
+        setFullTime(audios.full.currentTime);
+      }
+      modeRef.current = null;
+      setMode(null);
+      setPlaying(false);
+      setSliceElapsed(0);
     };
 
-    audio.addEventListener("loadedmetadata", onMeta);
-    audio.addEventListener("durationchange", onMeta);
-    audio.addEventListener("ended", onEnded);
+    allAudios.forEach((audio) => {
+      audio.preload = "auto";
+      audio.addEventListener("ended", onEnded);
+      audio.load();
+    });
+    audios.full.addEventListener("loadedmetadata", onMeta);
+    audios.full.addEventListener("durationchange", onMeta);
+    window.addEventListener(PROCESS_AUDIO_PLAY_EVENT, stopForAnotherAudio);
 
     return () => {
       stopRaf();
-      audio.pause();
-      audio.removeEventListener("loadedmetadata", onMeta);
-      audio.removeEventListener("durationchange", onMeta);
-      audio.removeEventListener("ended", onEnded);
+      audios.full.removeEventListener("loadedmetadata", onMeta);
+      audios.full.removeEventListener("durationchange", onMeta);
+      window.removeEventListener(PROCESS_AUDIO_PLAY_EVENT, stopForAnotherAudio);
+      allAudios.forEach((audio) => {
+        audio.pause();
+        audio.removeEventListener("ended", onEnded);
+        audio.removeAttribute("src");
+        audio.load();
+      });
+      audioByModeRef.current = null;
       audioRef.current = null;
     };
   }, [restoreVolume, stopRaf]);
 
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.muted = muted;
-    if (!muted && !fadingRef.current) audio.volume = 1;
+    const audios = audioByModeRef.current;
+    if (!audios) return;
+    Object.values(audios).forEach((audio) => {
+      audio.muted = muted;
+      if (!muted && !fadingRef.current) audio.volume = 1;
+    });
   }, [muted]);
 
   async function startMode(next: Exclude<Mode, null>, atSec: number) {
-    const audio = audioRef.current;
+    const audios = audioByModeRef.current;
+    const audio = audios?.[next];
     if (!audio) return;
+    const previousAudio = audioRef.current;
+    const playbackAt = next === "full" ? atSec : 0;
 
     stopRaf();
     fadingRef.current = false;
-    audio.pause();
+    previousAudio?.pause();
+    audioRef.current = audio;
     audio.volume = muted ? 0 : 1;
     modeRef.current = next;
     setMode(next);
@@ -244,25 +432,33 @@ export default function ProcessAudioExperience() {
     if (next === "full") setFullTime(atSec);
 
     const seek = () => {
-      audio.currentTime = atSec;
+      audio.currentTime = playbackAt;
     };
-    seek();
-    if (audio.readyState < 1) {
-      await new Promise<void>((resolve) => {
+    const waitingForMetadata = audio.readyState < 1;
+    const metadataReady = waitingForMetadata
+      ? new Promise<void>((resolve) => {
         const onReady = () => {
           audio.removeEventListener("loadedmetadata", onReady);
           resolve();
         };
         audio.addEventListener("loadedmetadata", onReady);
-      });
-      seek();
-    }
+      })
+      : Promise.resolve();
 
-    try {
-      await audio.play();
+    if (!waitingForMetadata) seek();
+    claimProcessAudioPlayback(audio);
+    const playbackStarted = audio.play().then(
+      () => true,
+      () => false,
+    );
+
+    await metadataReady;
+    seek();
+
+    if (await playbackStarted) {
       setPlaying(true);
       ensureLoop();
-    } catch {
+    } else {
       setPlaying(false);
       modeRef.current = null;
       setMode(null);
@@ -273,6 +469,8 @@ export default function ProcessAudioExperience() {
     const audio = audioRef.current;
     const slice = SLICES.find((item) => item.id === sliceId);
     if (!audio || !slice) return;
+
+    setSelectedSliceId(sliceId);
 
     if (modeRef.current === sliceId && playing) {
       audio.pause();
@@ -285,6 +483,7 @@ export default function ProcessAudioExperience() {
 
     if (modeRef.current === sliceId && !playing) {
       try {
+        claimProcessAudioPlayback(audio);
         await audio.play();
         setPlaying(true);
         ensureLoop();
@@ -295,6 +494,22 @@ export default function ProcessAudioExperience() {
     }
 
     await startMode(sliceId, slice.startSec);
+  }
+
+  function selectSlice(sliceId: "slice-01" | "slice-02") {
+    const audio = audioRef.current;
+
+    if (audio) {
+      audio.pause();
+      audio.volume = muted ? 0 : 1;
+    }
+    stopRaf();
+    fadingRef.current = false;
+    modeRef.current = null;
+    setMode(null);
+    setPlaying(false);
+    setSliceElapsed(0);
+    setSelectedSliceId(sliceId);
   }
 
   async function toggleFull() {
@@ -311,6 +526,7 @@ export default function ProcessAudioExperience() {
 
     if (modeRef.current === "full" && !playing) {
       try {
+        claimProcessAudioPlayback(audio);
         await audio.play();
         setPlaying(true);
         ensureLoop();
@@ -324,7 +540,7 @@ export default function ProcessAudioExperience() {
   }
 
   function seekFull(ratio: number) {
-    const audio = audioRef.current;
+    const audio = audioByModeRef.current?.full;
     if (!audio) return;
     const duration =
       Number.isFinite(audio.duration) && audio.duration > 0
@@ -332,13 +548,15 @@ export default function ProcessAudioExperience() {
         : fullDuration;
     const next = Math.min(duration, Math.max(0, ratio * duration));
     if (modeRef.current !== "full") {
+      audioRef.current?.pause();
+      audioRef.current = audio;
       stopRaf();
       fadingRef.current = false;
       modeRef.current = "full";
       setMode("full");
       setSliceElapsed(0);
       restoreVolume();
-      setPlaying(!audio.paused);
+      setPlaying(false);
     }
     audio.currentTime = next;
     setFullTime(next);
@@ -375,6 +593,20 @@ export default function ProcessAudioExperience() {
 
   const fullProgress =
     fullDuration > 0 ? Math.min(1, Math.max(0, fullTime / fullDuration)) : 0;
+  const selectedSlice =
+    SLICES.find((slice) => slice.id === selectedSliceId) ?? SLICES[0];
+  const selectedSliceActive = mode === selectedSlice.id;
+  const selectedSlicePlaying = selectedSliceActive && playing;
+  const selectedClipLength = selectedSlice.endSec - selectedSlice.startSec;
+  const selectedElapsed = selectedSliceActive ? sliceElapsed : 0;
+  const selectedProgress =
+    selectedClipLength > 0
+      ? Math.min(1, selectedElapsed / selectedClipLength)
+      : 0;
+  const selectedWave = selectedSlice.wave.flatMap((height, index) => {
+    const nextHeight = selectedSlice.wave[index + 1] ?? height;
+    return [height, Math.round((height + nextHeight) / 2)];
+  });
 
   return (
     <>
@@ -395,115 +627,176 @@ export default function ProcessAudioExperience() {
 
       <section className={styles.selected} aria-labelledby="process-selected-title">
         <header className={styles.selectedHead}>
-          <p className={styles.selectedEn} aria-hidden="true">
-            SELECTED SLICES / 02
-          </p>
-          <h2 id="process-selected-title" className={styles.selectedTitle}>
-            精选切片
-          </h2>
+          <div>
+            <p className={styles.selectedEn} aria-hidden="true">
+              SELECTED SLICES / 02
+            </p>
+            <h2 id="process-selected-title" className={styles.selectedTitle}>
+              精选切片
+            </h2>
+          </div>
           <p className={styles.selectedLead}>
-            从完整成品里，
+            把整首歌摊开，
             <br />
-            切下最能代表它的两块。
+            两个最能代表它的瞬间就在这里。
           </p>
         </header>
 
-        <div className={styles.selectedList}>
-          {SLICES.map((slice) => {
-            const active = mode === slice.id;
-            const isPlaying = active && playing;
-            const clipLen = slice.endSec - slice.startSec;
-            const elapsed = active ? sliceElapsed : 0;
-            const progress = clipLen > 0 ? Math.min(1, elapsed / clipLen) : 0;
-            const mirrored = slice.id === "slice-02";
+        <div className={styles.timelineShell}>
+          <div className={styles.timelineTop}>
+            <div>
+              <span>FULL TRACK / 自动续费</span>
+              <strong>一首歌，两处被留下的瞬间</strong>
+            </div>
+            <span>{FULL_DURATION_LABEL}</span>
+          </div>
 
-            return (
-              <article
-                key={slice.id}
-                className={`${styles.selectedItem}${mirrored ? ` ${styles.selectedItemMirror}` : ` ${styles.selectedItemLeft}`}`}
-              >
-                <div className={styles.selectedBandFace} aria-hidden="true" />
+          <div className={styles.timelineRail} aria-label="《自动续费》歌曲时间轴">
+            <div className={styles.timelineRuler} aria-hidden="true">
+              {["00:00", "00:30", "01:00", "01:30", "02:00", FULL_DURATION_LABEL].map(
+                (label) => (
+                  <span key={label}>{label}</span>
+                ),
+              )}
+            </div>
+            <div className={styles.timelineBase} aria-hidden="true">
+              <span />
+              <span />
+              <span />
+              <span />
+              <span />
+              <span />
+            </div>
 
-                <div className={styles.selectedBandBody}>
-                  <div className={styles.selectedMeta}>
-                    <span className={styles.selectedLabel}>{slice.label}</span>
-                    <span className={styles.sliceRange}>{slice.rangeLabel}</span>
+            <div className={styles.timelineWindows}>
+              {SLICES.map((slice, index) => {
+                const selected = selectedSlice.id === slice.id;
+                const active = mode === slice.id;
+                const progress =
+                  active && slice.endSec > slice.startSec
+                    ? Math.min(
+                        1,
+                        sliceElapsed / (slice.endSec - slice.startSec),
+                      )
+                    : 0;
+
+                return (
+                  <button
+                    key={slice.id}
+                    type="button"
+                    className={`${styles.timelineSlice}${selected ? ` ${styles.timelineSliceSelected}` : ""}`}
+                    style={{
+                      left: `${(slice.startSec / fullDuration) * 100}%`,
+                      width: `${((slice.endSec - slice.startSec) / fullDuration) * 100}%`,
+                    }}
+                    aria-pressed={selected}
+                    aria-label={`选择 ${slice.label}，${slice.rangeLabel}`}
+                    onClick={() => {
+                      selectSlice(slice.id);
+                    }}
+                  >
+                    <span
+                      className={styles.timelineSliceFill}
+                      style={{ transform: `scaleX(${progress})` }}
+                      aria-hidden="true"
+                    />
+                    <strong>0{index + 1}</strong>
+                    <span>{slice.rangeLabel}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <article className={styles.timelineDetail} aria-live="polite">
+            <div className={styles.timelineDetailIndex} aria-hidden="true">
+              <strong>{selectedSlice.id === "slice-01" ? "01" : "02"}</strong>
+              <span>{selectedSlice.label}</span>
+            </div>
+
+            <div className={styles.timelineDetailCopy}>
+              <div className={styles.timelineDetailMeta}>
+                <span>{selectedSlice.rangeLabel}</span>
+                <span>{selectedSlice.durationLabel} SELECTED MOMENT</span>
+              </div>
+
+              <div className={styles.timelineLyrics}>
+                <KaraokeLyrics
+                  lines={selectedSlice.lyrics}
+                  timings={selectedSlice.lyricTimings}
+                  elapsed={selectedElapsed}
+                  active={
+                    selectedSliceActive &&
+                    (selectedSlicePlaying || selectedElapsed > 0)
+                  }
+                />
+              </div>
+
+              <div className={styles.timelinePlayer}>
+                <button
+                  type="button"
+                  className={`${styles.slicePlay}${selectedSlicePlaying ? ` ${styles.slicePlayActive}` : ""}`}
+                  aria-label={
+                    selectedSlicePlaying
+                      ? `暂停 ${selectedSlice.label}`
+                      : `播放 ${selectedSlice.label}`
+                  }
+                  onClick={() => {
+                    void toggleSlice(selectedSlice.id);
+                  }}
+                >
+                  <span className={styles.slicePlayIcon} aria-hidden="true" />
+                </button>
+
+                <div className={styles.sliceMonitor}>
+                  <div className={styles.sliceMonitorHead}>
+                    <span>SIGNAL / {selectedSlice.label}</span>
+                    <strong>{selectedSlicePlaying ? "PLAYING" : "READY"}</strong>
                   </div>
 
-                  <div className={styles.selectedLyric}>
-                    {slice.id === "slice-01" ? (
-                      <>
-                        <div className={styles.selectedLyricBlock}>
-                          <p className={styles.selectedLyricPair}>
-                            <span>{slice.lyrics[0]}</span>
-                            <span>{slice.lyrics[1]}</span>
-                          </p>
-                          <p>{slice.lyrics[2]}</p>
-                        </div>
-                        <div className={styles.selectedLyricBlock}>
-                          <p className={styles.selectedLyricPair}>
-                            <span>{slice.lyrics[3]}</span>
-                            <span>{slice.lyrics[4]}</span>
-                          </p>
-                          <p className={styles.selectedLyricLast}>{slice.lyrics[5]}</p>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className={styles.selectedLyricBlock}>
-                          <p>{slice.lyrics[0]}</p>
-                          <p>{slice.lyrics[1]}</p>
-                        </div>
-                        <div className={styles.selectedLyricBlock}>
-                          <p>{slice.lyrics[2]}</p>
-                          <p className={styles.selectedLyricLast}>{slice.lyrics[3]}</p>
-                        </div>
-                      </>
-                    )}
-                  </div>
-
-                  <div className={styles.selectedPlayer}>
-                    <button
-                      type="button"
-                      className={`${styles.slicePlay}${isPlaying ? ` ${styles.slicePlayActive}` : ""}`}
-                      aria-label={
-                        isPlaying
-                          ? `暂停 ${slice.label}`
-                          : `播放 ${slice.label}`
-                      }
-                      onClick={() => {
-                        void toggleSlice(slice.id);
+                  <div className={styles.sliceSeam} aria-hidden="true">
+                    <span className={styles.sliceSeamBase}>
+                      {selectedWave.map((height, index) => (
+                        <i
+                          key={`base-${index}`}
+                          className={styles.sliceWaveBar}
+                          style={{ height: `${height}%` }}
+                        />
+                      ))}
+                    </span>
+                    <span
+                      className={styles.sliceSeamFill}
+                      style={{
+                        clipPath: `inset(0 ${100 - selectedProgress * 100}% 0 0)`,
                       }}
                     >
-                      <span className={styles.slicePlayIcon} aria-hidden="true" />
-                    </button>
-
-                    <div className={styles.sliceSeam} aria-hidden="true">
-                      <span className={styles.sliceSeamBase} />
-                      <span
-                        className={styles.sliceSeamFill}
-                        style={{ width: `${progress * 100}%` }}
-                      />
-                      <span
-                        className={styles.sliceSeamThumb}
-                        style={{ left: `${progress * 100}%` }}
-                      />
-                    </div>
-
-                    <div className={styles.sliceTime}>
-                      <span className={styles.sliceTimeNow}>
-                        {formatTime(elapsed)}
-                      </span>
-                      <span className={styles.sliceTimeRule} />
-                      <span className={styles.sliceTimeDur}>
-                        {slice.durationLabel}
-                      </span>
-                    </div>
+                      {selectedWave.map((height, index) => (
+                        <i
+                          key={`fill-${index}`}
+                          className={styles.sliceWaveBar}
+                          style={{ height: `${height}%` }}
+                        />
+                      ))}
+                    </span>
+                    <span
+                      className={styles.sliceSeamThumb}
+                      style={{ left: `${selectedProgress * 100}%` }}
+                    />
                   </div>
                 </div>
-              </article>
-            );
-          })}
+
+                <div className={styles.sliceTime}>
+                  <span className={styles.sliceTimeNow}>
+                    {formatTime(selectedElapsed)}
+                  </span>
+                  <span className={styles.sliceTimeRule} />
+                  <span className={styles.sliceTimeDur}>
+                    {selectedSlice.durationLabel}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </article>
         </div>
       </section>
 
