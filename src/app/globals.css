@@ -6674,25 +6674,6 @@ html.has-music-cursor * {
   overflow: hidden;
 }
 
-.about-calibrator__center--portrait::after {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(145deg, rgba(201, 187, 255, 0.12), transparent 45%);
-  content: "";
-  pointer-events: none;
-}
-
-.about-calibrator__center--portrait small {
-  position: absolute;
-  right: 0;
-  bottom: 10%;
-  left: 0;
-  z-index: 2;
-  max-width: none;
-  color: rgba(239, 237, 229, 0.34);
-  font-size: clamp(0.36rem, 0.48vw, 0.46rem);
-}
-
 .about-avatar-slot {
   position: absolute;
   inset: 0;
@@ -6702,25 +6683,7 @@ html.has-music-cursor * {
   position: absolute;
   object-fit: cover;
   object-position: center;
-  filter: brightness(0.86) contrast(1.06) saturate(0.84);
   scale: 1.09;
-}
-
-.about-avatar-slot__scan {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background:
-    repeating-linear-gradient(
-      180deg,
-      rgba(239, 237, 229, 0.035) 0,
-      rgba(239, 237, 229, 0.035) 1px,
-      transparent 1px,
-      transparent 4px
-    ),
-    radial-gradient(circle at 50% 45%, transparent 28%, rgba(11, 12, 13, 0.28) 78%);
-  mix-blend-mode: screen;
-  pointer-events: none;
 }
 
 .about-studio {

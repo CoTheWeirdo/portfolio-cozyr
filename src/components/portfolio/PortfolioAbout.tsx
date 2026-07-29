@@ -192,15 +192,13 @@ export default function PortfolioAbout() {
               <div className="about-avatar-slot">
                 <Image
                   className="about-avatar-slot__portrait"
-                  src="/about/avatar-animated-cross-flower-necklace-long.png"
+                  src="/about/avatar-animated-exact-face-necklace.png"
                   alt=""
                   fill
                   sizes="12rem"
                   priority
                 />
-                <span className="about-avatar-slot__scan" />
               </div>
-              <small>YZ / VIRTUAL PORTRAIT</small>
             </div>
           </motion.div>
         </div>
