@@ -6703,7 +6703,7 @@ html.has-music-cursor * {
   object-fit: cover;
   object-position: center;
   filter: brightness(0.86) contrast(1.06) saturate(0.84);
-  scale: 1.04;
+  scale: 1.09;
 }
 
 .about-avatar-slot__scan {
