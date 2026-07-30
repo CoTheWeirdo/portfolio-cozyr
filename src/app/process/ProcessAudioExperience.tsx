@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import {
   useCallback,
   useEffect,
@@ -901,6 +902,15 @@ export default function ProcessAudioExperience() {
               <span aria-hidden="true">{muted ? "MUTE" : "VOL"}</span>
             </button>
           </div>
+
+          <Link
+            className={styles.finalCta}
+            href="/about"
+            transitionTypes={["nav-forward"]}
+          >
+            <span className={styles.finalCtaMeta}>NEXT / ABOUT</span>
+            <strong>继续认识我 ↗</strong>
+          </Link>
         </div>
       </section>
     </>

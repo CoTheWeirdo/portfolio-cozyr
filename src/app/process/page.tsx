@@ -1,11 +1,13 @@
 import Image from "next/image";
 import PortfolioShell from "@/components/portfolio/PortfolioShell";
+import { autoRenewalCase } from "@/data/autoRenewalCase";
 import ProcessAudioExperience from "./ProcessAudioExperience";
 import TasteAudioButton from "./TasteAudioButton";
 import styles from "./process-page.module.css";
 
 // The process case study stays server-rendered; audio controls hydrate separately.
 const COVER = "/assets/works/auto-renewal/cover.png";
+const TEMPO = autoRenewalCase.brief.sonic.tempo;
 
 /** Top → bottom: texture down to emotion */
 const SOUND_LAYERS = [
@@ -87,9 +89,12 @@ export default function ProcessPage() {
                   </div>
                 ))}
               </div>
-              <div className={styles.bpmStamp} aria-label="72 BPM">
-                <span className={styles.bpmNumber}>72</span>
-                <span className={styles.bpmUnit}>BPM</span>
+              <div
+                className={styles.bpmStamp}
+                aria-label={`${TEMPO.bpm} ${TEMPO.unit}`}
+              >
+                <span className={styles.bpmNumber}>{TEMPO.bpm}</span>
+                <span className={styles.bpmUnit}>{TEMPO.unit}</span>
               </div>
             </div>
 
@@ -164,7 +169,9 @@ export default function ProcessPage() {
                   </div>
                 </div>
                 <div className={styles.sourceCaption}>
-                  <span>SOURCE / 72 BPM</span>
+                  <span>
+                    SOURCE / {TEMPO.bpm} {TEMPO.unit}
+                  </span>
                   <strong>自动续费</strong>
                   <p>深夜 R&amp;B · 不同段落 · 同一时长</p>
                 </div>

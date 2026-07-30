@@ -44,7 +44,12 @@ export default function PortfolioNav() {
       }
       style={{ pointerEvents: hidden ? "none" : undefined }}
     >
-      <Link className="nav__brand" href="/" aria-label="Yz香菜，回到首页">
+      <Link
+        className="nav__brand"
+        href="/"
+        aria-label="Yz香菜，回到首页"
+        transitionTypes={["nav-back"]}
+      >
         <span className="nav__brand-yz">Yz</span>
         <span className="nav__brand-cn">香菜</span>
         <span className="nav__brand-dot" aria-hidden="true" />
@@ -55,6 +60,7 @@ export default function PortfolioNav() {
             key={link.href}
             className={`fx-link ${pathname === link.href ? "fx-link--active" : ""}`}
             href={link.href}
+            transitionTypes={["nav-forward"]}
           >
             <span className="nav__link-inner">
               <span className="nav__note" aria-hidden>{link.note}</span>

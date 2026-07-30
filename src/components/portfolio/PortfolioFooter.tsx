@@ -49,13 +49,14 @@ export default function PortfolioFooter() {
           <span>Music · Data · AI</span>
         </div>
 
-        <img
-          className="portfolio-footer__cat"
-          src="/assets/cat-footer.gif"
-          alt=""
-          aria-hidden="true"
-          draggable={false}
-        />
+        <div className="portfolio-footer__cat-wrap" aria-hidden="true">
+          <img
+            className="portfolio-footer__cat"
+            src="/assets/cat-footer.gif"
+            alt=""
+            draggable={false}
+          />
+        </div>
       </div>
     </footer>
   );

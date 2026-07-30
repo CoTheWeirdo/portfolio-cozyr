@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { useEffect } from "react";
+import { useReducedMotion } from "framer-motion";
+import { useEffect, ViewTransition } from "react";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const reduceMotion = useReducedMotion();
@@ -10,17 +10,21 @@ export default function Template({ children }: { children: React.ReactNode }) {
     window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "instant" });
   }, [reduceMotion]);
 
-  if (reduceMotion) {
-    return <>{children}</>;
-  }
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
-      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      transition={{ duration: 0.65, ease: [0.2, 0.8, 0.2, 1] }}
+    <ViewTransition
+      default="none"
+      enter={{
+        "nav-forward": "portfolio-page-enter",
+        "nav-back": "portfolio-page-enter",
+        default: "portfolio-page-enter",
+      }}
+      exit={{
+        "nav-forward": "portfolio-page-exit",
+        "nav-back": "portfolio-page-exit",
+        default: "portfolio-page-exit",
+      }}
     >
       {children}
-    </motion.div>
+    </ViewTransition>
   );
 }

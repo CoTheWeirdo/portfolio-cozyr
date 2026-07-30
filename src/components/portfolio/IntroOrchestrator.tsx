@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -279,27 +280,39 @@ function IntroBridgeCat({
   const loading = phase === "loading";
 
   // Pin to the loader cat-slot so gap/centering match the copy stack
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (phase !== "loading") return;
     const el = catRef.current;
     if (!el) return;
+    const slot = document.querySelector<HTMLElement>(".intro-loader__cat-slot");
+    if (!slot) return;
 
     const sync = () => {
-      const slot = document.querySelector(".intro-loader__cat-slot");
-      if (!slot) return;
       const r = slot.getBoundingClientRect();
       el.style.left = `${r.left}px`;
       el.style.top = `${r.top}px`;
       el.style.width = `${r.width}px`;
+      el.style.height = `${r.height}px`;
       el.style.translate = "none";
     };
 
     sync();
-    const raf = requestAnimationFrame(sync);
+    const firstFrame = requestAnimationFrame(sync);
+    const resizeObserver =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(sync);
+    resizeObserver?.observe(slot);
     window.addEventListener("resize", sync);
+    window.addEventListener("scroll", sync, { passive: true });
+    window.visualViewport?.addEventListener("resize", sync);
+    window.visualViewport?.addEventListener("scroll", sync);
+
     return () => {
-      cancelAnimationFrame(raf);
+      cancelAnimationFrame(firstFrame);
+      resizeObserver?.disconnect();
       window.removeEventListener("resize", sync);
+      window.removeEventListener("scroll", sync);
+      window.visualViewport?.removeEventListener("resize", sync);
+      window.visualViewport?.removeEventListener("scroll", sync);
     };
   }, [phase]);
 
@@ -366,6 +379,7 @@ function IntroBridgeCat({
         elNow.style.left = `${visual.left}px`;
         elNow.style.top = `${visual.top}px`;
         elNow.style.width = `${visual.width}px`;
+        elNow.style.height = `${visual.height}px`;
         elNow.style.translate = "none";
         arrivedRef.current = true;
         elNow.classList.add("intro-bridge-cat--settled");
