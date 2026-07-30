@@ -577,12 +577,7 @@ export default function PortfolioAbout() {
             <Link className="about-contact__link" href="/">
               回到首页 <span aria-hidden="true">←</span>
             </Link>
-            <a
-              className="about-contact__link about-contact__email"
-              href="mailto:2312464576@qq.com"
-            >
-              2312464576@qq.com <span aria-hidden="true">↗</span>
-            </a>
+            <span className="about-contact__email">2312464576@qq.com</span>
           </div>
         </div>
 

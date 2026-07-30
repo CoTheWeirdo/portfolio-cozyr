@@ -3637,13 +3637,13 @@ html.has-music-cursor * {
     line-height: .92;
   }
   .intro-stage__fuzzy {
-    max-width: none;
+    max-width: 100%;
     width: auto;
     height: auto;
     /* Do NOT scale — FuzzyText canvas already uses phone fontSize */
     transform: none;
     transform-origin: left center;
-    overflow: visible;
+    overflow: hidden;
   }
   .intro-stage__alias {
     margin: 14px 0 0 0;
@@ -4178,12 +4178,12 @@ html.has-music-cursor * {
   width: clamp(76px, 7vw, 105px);
   border-radius: 42% 24% 18% 34%;
   -webkit-mask-image:
-    linear-gradient(to bottom, #000 0 76%, transparent 100%),
-    linear-gradient(to right, #000 0 80%, transparent 100%);
+    linear-gradient(to bottom, #000 0 84%, transparent 100%),
+    linear-gradient(to right, #000 0 90%, transparent 100%);
   -webkit-mask-composite: source-in;
   mask-image:
-    linear-gradient(to bottom, #000 0 76%, transparent 100%),
-    linear-gradient(to right, #000 0 80%, transparent 100%);
+    linear-gradient(to bottom, #000 0 84%, transparent 100%),
+    linear-gradient(to right, #000 0 90%, transparent 100%);
   mask-composite: intersect;
   pointer-events: none;
 }
@@ -4208,6 +4208,25 @@ html.has-music-cursor * {
   50% {
     opacity: 0.9;
     transform: translateY(-1.5px);
+  }
+}
+
+@media (max-width: 1100px) {
+  .portfolio-footer__heading,
+  .portfolio-footer__meta {
+    max-width: calc(100% - 120px);
+  }
+  .portfolio-footer__signal {
+    width: calc(100% - 108px);
+  }
+  .portfolio-footer__cat-wrap {
+    width: clamp(88px, 12vw, 110px);
+    -webkit-mask-image:
+      linear-gradient(to bottom, #000 0 88%, transparent 100%),
+      linear-gradient(to right, #000 0 92%, transparent 100%);
+    mask-image:
+      linear-gradient(to bottom, #000 0 88%, transparent 100%),
+      linear-gradient(to right, #000 0 92%, transparent 100%);
   }
 }
 
@@ -4239,7 +4258,7 @@ html.has-music-cursor * {
   .portfolio-footer__cat-wrap {
     right: 2px;
     bottom: -8px;
-    width: clamp(66px, 20vw, 88px);
+    width: clamp(72px, 20vw, 92px);
   }
   .portfolio-footer__cat {
     opacity: 0.76;
@@ -6055,9 +6074,13 @@ html.has-music-cursor * {
 }
 
 .about-contact__email {
+  display: block;
   margin-top: 0.65rem;
   color: var(--about-paper);
   font-size: clamp(0.96rem, 1.05vw, 1.08rem);
+  text-decoration: none;
+  cursor: text;
+  user-select: text;
 }
 
 .about-contact__foot {
@@ -7225,9 +7248,14 @@ html.has-music-cursor * {
   object-fit: contain;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1100px) {
   .about-studio__layout {
     grid-template-columns: 1fr;
+  }
+
+  .about-studio__head {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
   }
 
   .about-studio__scene {
@@ -7252,13 +7280,12 @@ html.has-music-cursor * {
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 767px) {
   .about-studio {
     padding-top: 7rem;
     padding-bottom: 8rem;
   }
   .about-studio__head {
-    grid-template-columns: 1fr;
     gap: 1.6rem;
   }
   .about-studio__head h2 {

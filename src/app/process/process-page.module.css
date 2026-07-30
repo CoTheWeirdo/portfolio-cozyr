@@ -1956,6 +1956,28 @@
 }
 
 @media (max-width: 1100px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+  }
+
+  .heroVisual {
+    justify-self: start;
+    max-width: 30rem;
+  }
+
+  .bpmNumber {
+    font-size: clamp(2.1rem, 3.6vw, 2.75rem);
+  }
+
+  .bpmStamp {
+    min-width: 3.6rem;
+  }
+
+  .sliceBlock {
+    gap: 0.55rem 0.85rem;
+  }
+
   .tasteHead {
     grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.9fr) auto;
     gap: 1.5rem;
@@ -2010,16 +2032,6 @@
     font-size: 1rem;
   }
 
-  .hero {
-    grid-template-columns: 1fr;
-    gap: 1.4rem;
-  }
-
-  .heroVisual {
-    justify-self: start;
-    max-width: 30rem;
-  }
-
   .selectedList {
     gap: 1.75rem;
   }
@@ -2060,6 +2072,15 @@
 
   .fullPlayer {
     width: min(100%, 36rem);
+  }
+}
+
+@media (max-width: 1100px) {
+  .finalCta {
+    width: min(100%, 18rem);
+    min-height: 48px;
+    box-sizing: border-box;
+    padding: 0.9rem 1.25rem;
   }
 }
 
@@ -2502,8 +2523,6 @@
   }
 
   .finalCta {
-    width: min(100%, 18rem);
     margin-top: 1.25rem;
-    padding: 0.9rem 1.25rem;
   }
 }
