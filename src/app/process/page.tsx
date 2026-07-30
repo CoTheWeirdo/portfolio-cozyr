@@ -1,4 +1,5 @@
 import Image from "next/image";
+import PageEnter from "@/components/portfolio/PageEnter";
 import PortfolioShell from "@/components/portfolio/PortfolioShell";
 import { autoRenewalCase } from "@/data/autoRenewalCase";
 import ProcessAudioExperience from "./ProcessAudioExperience";
@@ -58,25 +59,31 @@ export default function ProcessPage() {
     <PortfolioShell className="portfolio--process" ferro="process">
       <div className={styles.page}>
         <section className={styles.hero} aria-labelledby="process-hero-title">
-          <div className={styles.heroCopy}>
+          <PageEnter className={styles.heroCopy} delay={0.06} emphasis="copy">
             <p className={styles.eyebrow}>CASE FILE / 自动续费</p>
-            <h1 id="process-hero-title" className={styles.heroTitle}>
-              一首歌的切面
-            </h1>
-            <p className={styles.heroEn} aria-hidden="true">
-              THE LAYERS OF A SONG
-            </p>
-            <div className={styles.heroLead}>
-              <p>做一首歌，像把不同的味道一层层叠起来。</p>
-              <p>
-                AI 生成不同的可能，
-                <br />
-                我负责试听、调整和选择。
+            <PageEnter delay={0.18} emphasis="title">
+              <h1 id="process-hero-title" className={styles.heroTitle}>
+                一首歌的切面
+              </h1>
+            </PageEnter>
+            <PageEnter delay={0.34} emphasis="soft">
+              <p className={styles.heroEn} aria-hidden="true">
+                THE LAYERS OF A SONG
               </p>
-            </div>
-          </div>
+            </PageEnter>
+            <PageEnter delay={0.48} emphasis="copy">
+              <div className={styles.heroLead}>
+                <p>做一首歌，像把不同的味道一层层叠起来。</p>
+                <p>
+                  AI 生成不同的可能，
+                  <br />
+                  我负责试听、调整和选择。
+                </p>
+              </div>
+            </PageEnter>
+          </PageEnter>
 
-          <div className={styles.heroVisual}>
+          <PageEnter className={styles.heroVisual} delay={0.28} emphasis="soft">
             <div className={styles.sliceBlock}>
               <div className={styles.sliceStack} aria-hidden="true">
                 {SOUND_LAYERS.map((layer) => (
@@ -114,7 +121,7 @@ export default function ProcessPage() {
               <span>AVOID</span>
               欢快律动 · 高音炫技 · 过度煽情 · 网络热歌感
             </p>
-          </div>
+          </PageEnter>
         </section>
 
         <section className={styles.taste} aria-labelledby="process-taste-title">

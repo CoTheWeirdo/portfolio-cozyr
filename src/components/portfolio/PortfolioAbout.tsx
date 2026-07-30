@@ -140,41 +140,56 @@ export default function PortfolioAbout() {
   const reveal = reduceMotion
     ? {}
     : {
-        initial: { opacity: 0, y: 24 },
-        animate: { opacity: 1, y: 0 },
+        initial: { opacity: 0, y: 22, filter: "blur(10px)" },
+        animate: { opacity: 1, y: 0, filter: "blur(0px)" },
       };
 
   return (
     <PortfolioShell ferro="about" className="portfolio--about-page about-reframe">
       <section className="about-hero" aria-labelledby="about-title">
-        <header className="about-chapter">
+        <motion.header
+          className="about-chapter"
+          {...reveal}
+          transition={{ duration: 0.78, delay: 0.04, ease: [0.22, 1, 0.36, 1] }}
+        >
           <span>03 / ABOUT</span>
           <span>MAKE MUSIC / LISTEN CLOSELY</span>
-        </header>
+        </motion.header>
 
         <div className="about-hero__layout">
-          <motion.div
-            className="about-hero__copy"
-            {...reveal}
-            transition={{ duration: 0.72, ease: [0.2, 0.8, 0.2, 1] }}
-          >
-            <p className="about-hero__kicker">张韵蕊 · 独立音乐人 / 音乐制作人 / AI 音乐数据分析</p>
-            <h1 id="about-title" className="about-hero__title">
+          <div className="about-hero__copy">
+            <motion.p
+              className="about-hero__kicker"
+              {...reveal}
+              transition={{ duration: 0.82, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+            >
+              张韵蕊 · 独立音乐人 / 音乐制作人 / AI 音乐数据分析
+            </motion.p>
+            <motion.h1
+              id="about-title"
+              className="about-hero__title"
+              {...reveal}
+              transition={{ duration: 1.05, delay: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            >
               我理解创作，
               <br />
               <em>也擅长把听感变成判断。</em>
-            </h1>
-            <p className="about-hero__intro">
+            </motion.h1>
+            <motion.p
+              className="about-hero__intro"
+              {...reveal}
+              transition={{ duration: 0.92, delay: 0.48, ease: [0.22, 1, 0.36, 1] }}
+            >
               从写词、编曲到录音与混音，我熟悉一首歌从创作到成品的全过程。数据分析背景让我习惯把“听起来不太对”的直觉拆解为具体问题：人声是否自然、风格是否偏移、情绪是否准确传达。对我而言，AI 音乐评测，就是把这些听感转化为可描述、可比较、可验证的判断。
-            </p>
-          </motion.div>
+            </motion.p>
+          </div>
 
           <motion.div
             className="about-calibrator"
             role="img"
             aria-label="反复聆听，直到能说清楚为什么"
             {...reveal}
-            transition={{ duration: 0.86, delay: 0.1, ease: [0.2, 0.8, 0.2, 1] }}
+            transition={{ duration: 1.0, delay: 0.36, ease: [0.22, 1, 0.36, 1] }}
           >
             <span className="about-calibrator__ring about-calibrator__ring--outer" aria-hidden="true" />
             <span className="about-calibrator__ring about-calibrator__ring--inner" aria-hidden="true" />
@@ -279,8 +294,8 @@ export default function PortfolioAbout() {
           <div>
             <h2 id="about-studio-title">歌不是一下写完的。</h2>
             <p>
-              左边是工程，右边是当时写下来的句子。
-              一首歌通常是在反复写、听和修改里慢慢成形。
+              工程记下声音怎么被改，歌词纸留住当时的念头。
+              歌就在一次次推翻和重来里，慢慢长成现在的样子。
             </p>
           </div>
         </header>

@@ -62,7 +62,7 @@
   font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
   font-size: clamp(1.0625rem, 1.28vw, 1.1875rem);
   line-height: 1.82;
-  color: rgba(214, 210, 200, 0.68);
+  color: rgba(214, 210, 200, 0.76);
 }
 
 .heroVisual {
@@ -169,25 +169,25 @@
   align-items: flex-start;
   gap: 0.05rem;
   padding: 0 0 0.15rem 0.1rem;
-  min-width: 3.4rem;
-  opacity: 0.9;
+  min-width: 4.25rem;
+  opacity: 0.96;
 }
 
 .bpmNumber {
   font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
-  font-size: clamp(1.7rem, 2.7vw, 2.15rem);
-  font-weight: 600;
+  font-size: clamp(2.35rem, 4.4vw, 3.35rem);
+  font-weight: 650;
   letter-spacing: -0.03em;
   line-height: 0.95;
-  color: rgba(237, 233, 223, 0.78);
+  color: rgba(237, 233, 223, 0.9);
 }
 
 .bpmUnit {
   font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
-  font-size: 0.62rem;
+  font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.16em;
-  color: rgba(185, 180, 216, 0.58);
+  color: rgba(185, 180, 216, 0.7);
 }
 
 .heroNotes {
@@ -207,7 +207,7 @@
   font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
   font-size: 1.0625rem;
   line-height: 1.82;
-  color: rgba(214, 210, 200, 0.5);
+  color: rgba(214, 210, 200, 0.62);
 }
 
 .heroNotes span {
@@ -224,7 +224,7 @@
   font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
   font-size: 1.0625rem;
   line-height: 1.82;
-  color: rgba(214, 210, 200, 0.42);
+  color: rgba(214, 210, 200, 0.58);
 }
 
 .avoidNote {
@@ -237,7 +237,7 @@
   font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
   font-size: 1.0625rem;
   line-height: 1.8;
-  color: rgba(185, 180, 216, 0.3);
+  color: rgba(185, 180, 216, 0.5);
 }
 
 .avoidNote span {
@@ -291,7 +291,7 @@
   font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
   font-size: clamp(1rem, 1.18vw, 1.125rem);
   line-height: 1.78;
-  color: rgba(214, 210, 200, 0.62);
+  color: rgba(214, 210, 200, 0.72);
 }
 
 .tasteMeta {
@@ -484,7 +484,7 @@
   font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
   font-size: 0.82rem;
   line-height: 1.7;
-  color: rgba(214, 210, 200, 0.42);
+  color: rgba(214, 210, 200, 0.58);
 }
 
 .versionRack {
@@ -852,7 +852,7 @@
   font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
   font-size: clamp(1.0625rem, 1.18vw, 1.125rem);
   line-height: 1.82;
-  color: rgba(214, 210, 200, 0.5);
+  color: rgba(214, 210, 200, 0.64);
 }
 
 /* ——— Selected slices ——— */
@@ -895,7 +895,7 @@
   font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
   font-size: clamp(1rem, 1.18vw, 1.125rem);
   line-height: 1.78;
-  color: rgba(214, 210, 200, 0.62);
+  color: rgba(214, 210, 200, 0.72);
 }
 
 .timelineShell {
@@ -1647,7 +1647,7 @@
   font-family: "Hiragino Sans GB", "PingFang SC", sans-serif;
   font-size: clamp(1.0625rem, 1.2vw, 1.1875rem);
   line-height: 1.82;
-  color: rgba(214, 210, 200, 0.54);
+  color: rgba(214, 210, 200, 0.68);
 }
 
 .finalReveal {

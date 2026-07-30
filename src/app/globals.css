@@ -18,26 +18,12 @@ html {
   max-width: 100%;
   overflow-x: hidden;
 }
+/* Route pages use PageEnter for text; avoid PPT-like full-page swaps. */
 @supports (view-transition-name: none) {
-  ::view-transition-old(.portfolio-page-exit) {
-    animation: portfolio-page-out 130ms ease-in both;
-  }
-  ::view-transition-new(.portfolio-page-enter) {
-    animation: portfolio-page-in 240ms cubic-bezier(.22, 1, .36, 1) both;
-  }
-}
-@keyframes portfolio-page-out {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
-@keyframes portfolio-page-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
   }
 }
 body {
@@ -2790,14 +2776,14 @@ html.has-music-cursor * {
   font-weight: 400;
   line-height: 1.75;
   letter-spacing: .015em;
-  color: #c9c5bb;
+  color: #d1cdc3;
 }
 .intro-stage__pitch--second {
   margin-top: clamp(.7rem, 1.6vh, 1.1rem);
   max-width: 24rem;
   margin-left: clamp(1rem, 4vw, 2.8rem);
   font-size: clamp(.84rem, 1.2vw, 1rem);
-  color: #a8a49a;
+  color: #b8b4aa;
 }
 .intro-stage__actions {
   position: relative;
@@ -4154,7 +4140,7 @@ html.has-music-cursor * {
   font-family: var(--font-body), Arial, sans-serif;
   font-size: clamp(0.82rem, 1.05vw, 0.94rem);
   letter-spacing: 0.02em;
-  color: rgba(201, 197, 187, 0.62);
+  color: rgba(201, 197, 187, 0.72);
 }
 .portfolio-footer__signal {
   margin-top: 1.35rem;
@@ -6222,7 +6208,7 @@ html.has-music-cursor * {
 
 .about-reframe .about-hero__intro {
   max-width: 41rem;
-  color: rgba(239, 237, 229, 0.72);
+  color: rgba(239, 237, 229, 0.78);
   font-size: clamp(1.03rem, 1.15vw, 1.16rem);
   line-height: 1.95;
 }
@@ -6294,7 +6280,7 @@ html.has-music-cursor * {
 
 .about-focus__head p {
   margin: 1.15rem 0 0;
-  color: rgba(239, 237, 229, 0.52);
+  color: rgba(239, 237, 229, 0.64);
   font-size: clamp(0.95rem, 1.05vw, 1.08rem);
   line-height: 1.8;
 }
@@ -6800,7 +6786,7 @@ html.has-music-cursor * {
 .about-studio__head p {
   margin: 1rem 0 0;
   max-width: 43rem;
-  color: rgba(239, 237, 229, 0.5);
+  color: rgba(239, 237, 229, 0.64);
   font-size: clamp(0.95rem, 1.05vw, 1.08rem);
   line-height: 1.8;
 }
@@ -7120,7 +7106,7 @@ html.has-music-cursor * {
   grid-template-columns: auto 1fr;
   gap: 0.25rem 0.7rem;
   margin: 1.25rem 0 0;
-  color: rgba(239, 237, 229, 0.34);
+  color: rgba(239, 237, 229, 0.48);
 }
 
 .about-lyrics__caption > span {
@@ -7198,7 +7184,7 @@ html.has-music-cursor * {
 .about-studio-note p {
   max-width: 26rem;
   margin: 0.75rem 0 0;
-  color: rgba(239, 237, 229, 0.56);
+  color: rgba(239, 237, 229, 0.68);
   font-size: clamp(0.92rem, 1vw, 1rem);
   line-height: 1.85;
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import PageEnter from "@/components/portfolio/PageEnter";
+
 type HearVinylIntroProps = {
   mode: "intro" | "return" | "static";
   highlight: "a" | "b";
@@ -27,10 +29,14 @@ export default function HearVinylIntro({
       </div>
 
       <div className="hear-vinyl__copy">
-        <h1 id="hear-vinyl-title" className="hear-vinyl__title">
-          听见
-        </h1>
-        <p className="hear-vinyl__lead">两面声音，各有各的来路。</p>
+        <PageEnter delay={mode === "intro" ? 0.9 : 0.1} emphasis="title">
+          <h1 id="hear-vinyl-title" className="hear-vinyl__title">
+            听见
+          </h1>
+        </PageEnter>
+        <PageEnter delay={mode === "intro" ? 1.12 : 0.28} emphasis="copy">
+          <p className="hear-vinyl__lead">两面声音，各有各的来路。</p>
+        </PageEnter>
       </div>
 
       <div className="hear-vinyl__sides">

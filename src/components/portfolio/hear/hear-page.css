@@ -228,7 +228,7 @@
 
 .hear-vinyl__lead {
   margin: 0.85rem 0 0;
-  color: rgba(214, 210, 200, 0.82);
+  color: rgba(214, 210, 200, 0.88);
   font-size: clamp(0.92rem, 1.5vw, 1.05rem);
   letter-spacing: 0.04em;
 }
@@ -486,7 +486,7 @@
 .hear-side__lead {
   margin: 0.9rem 0 0;
   max-width: 28rem;
-  color: rgba(214, 210, 200, 0.84);
+  color: rgba(214, 210, 200, 0.88);
   font-size: 0.95rem;
   line-height: 1.7;
 }
@@ -536,20 +536,20 @@
 
 .hear-side__now-sub {
   margin: 0.25rem 0 0;
-  color: rgba(185, 180, 216, 0.62);
+  color: rgba(185, 180, 216, 0.7);
   font-size: 0.88rem;
 }
 
 .hear-side__now-note {
   margin: 0.75rem 0 0;
-  color: rgba(214, 210, 200, 0.8);
+  color: rgba(214, 210, 200, 0.86);
   font-size: 0.92rem;
   line-height: 1.55;
 }
 
 .hear-side__now-roles {
   margin: 0.7rem 0 0;
-  color: rgba(214, 210, 200, 0.72);
+  color: rgba(214, 210, 200, 0.8);
   font-size: 0.78rem;
   letter-spacing: 0.04em;
 }
@@ -563,7 +563,7 @@
 
 .hear-side__now-version {
   margin: 0.55rem 0 0;
-  color: rgba(185, 180, 216, 0.55);
+  color: rgba(185, 180, 216, 0.64);
   font-size: 0.72rem;
   letter-spacing: 0.06em;
 }
@@ -871,7 +871,7 @@ a.hear-side__foot-link {
   font-weight: 400;
   font-style: normal;
   letter-spacing: 0.01em;
-  color: rgba(214, 210, 200, 0.62);
+  color: rgba(214, 210, 200, 0.74);
   line-height: 1.55;
   max-width: 36em;
   overflow: hidden;
@@ -1073,7 +1073,7 @@ a.hear-side__foot-link {
 .hear-side--b .hear-sideb-listening__line {
   margin: 0.45rem 0 0;
   max-width: 22rem;
-  color: rgba(214, 210, 200, 0.62);
+  color: rgba(214, 210, 200, 0.74);
   font-size: 0.88rem;
   line-height: 1.55;
   min-height: calc(0.88rem * 1.55 * 2);
