@@ -206,7 +206,8 @@ export default function ProcessPage() {
                     <div className={styles.versionSignal}>
                       <TasteAudioButton
                         src={version.audio}
-                        label={`${version.id} ${version.note}版本`}
+                        label={`自动续费 ${version.id} ${version.note}版本`}
+                        analyticsLabel={`播放自动续费 · ${version.id} ${version.note}`}
                         className={styles.playDot}
                         activeClassName={styles.playDotActive}
                       />

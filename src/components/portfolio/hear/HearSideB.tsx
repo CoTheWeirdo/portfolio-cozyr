@@ -219,7 +219,12 @@ export default function HearSideB({
                     {trackNum}
                   </span>
                   <span className="hear-track__name">
-                    <span className="hear-sideb-track-label">{track.title}</span>
+                    <span
+                      className="hear-sideb-track-label"
+                      data-analytics-track={track.title}
+                    >
+                      {track.title}
+                    </span>
                     {active ? (
                       <span className="hear-sideb-selected" aria-hidden="true">
                         SELECTED / {trackNum}
@@ -234,6 +239,11 @@ export default function HearSideB({
                       playing
                         ? `暂停 ${track.title} 试听`
                         : `试听 ${track.title} 20秒`
+                    }
+                    data-analytics={
+                      playing
+                        ? `暂停试听 · ${track.title}`
+                        : `试听 · ${track.title}`
                     }
                     onClick={(event) => {
                       event.stopPropagation();

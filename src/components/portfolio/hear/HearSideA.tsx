@@ -143,7 +143,9 @@ export default function HearSideA({
                   <span className="hear-track__num" aria-hidden>
                     {pad2(index + 1)}
                   </span>
-                  <span className="hear-track__name">{work.label}</span>
+                  <span className="hear-track__name" data-analytics-track={work.label}>
+                    {work.label}
+                  </span>
                   <span className="hear-track__dur">{SIDE_A_DURATIONS[work.id] ?? "—:—"}</span>
                   <button
                     type="button"
@@ -152,6 +154,11 @@ export default function HearSideA({
                       playing
                         ? `暂停 ${work.label} 试听`
                         : `试听 ${work.label} 20秒`
+                    }
+                    data-analytics={
+                      playing
+                        ? `暂停试听 · ${work.label}`
+                        : `试听 · ${work.label}`
                     }
                     onClick={(event) => {
                       event.stopPropagation();

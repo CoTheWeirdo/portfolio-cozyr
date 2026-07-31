@@ -10,6 +10,8 @@ import {
 type TasteAudioButtonProps = {
   src: string;
   label: string;
+  /** Invisible analytics label, e.g. song + version */
+  analyticsLabel?: string;
   className: string;
   activeClassName: string;
 };
@@ -17,6 +19,7 @@ type TasteAudioButtonProps = {
 export default function TasteAudioButton({
   src,
   label,
+  analyticsLabel,
   className,
   activeClassName,
 }: TasteAudioButtonProps) {
@@ -62,6 +65,10 @@ export default function TasteAudioButton({
       <button
         type="button"
         className={`${className}${playing ? ` ${activeClassName}` : ""}`}
+        data-analytics={
+          analyticsLabel ||
+          `${playing ? "暂停" : "播放"}${label}`
+        }
         aria-label={playing ? `暂停${label}` : `播放${label}`}
         aria-pressed={playing}
         onClick={() => {

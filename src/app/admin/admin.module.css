@@ -1,0 +1,271 @@
+.page {
+  min-height: 100svh;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  background:
+    radial-gradient(circle at top left, rgba(120, 90, 160, 0.16), transparent 40%),
+    linear-gradient(180deg, #14130f 0%, #0f0e0c 100%);
+  color: #ede9df;
+  font-family: var(--font-body), "Avenir Next", sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.kicker {
+  margin: 0 0 0.4rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: rgba(185, 180, 216, 0.7);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 600;
+}
+
+.lead,
+.muted {
+  margin: 0.55rem 0 0;
+  color: rgba(237, 233, 223, 0.68);
+  line-height: 1.6;
+}
+
+.login {
+  max-width: 24rem;
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.25rem;
+  border: 1px solid rgba(185, 180, 216, 0.18);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.label {
+  display: grid;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  color: rgba(237, 233, 223, 0.78);
+}
+
+.input {
+  width: 100%;
+  border: 1px solid rgba(185, 180, 216, 0.22);
+  border-radius: 0.7rem;
+  background: rgba(0, 0, 0, 0.25);
+  color: #ede9df;
+  padding: 0.75rem 0.9rem;
+  font: inherit;
+}
+
+.primaryBtn,
+.ghostBtn {
+  border: 1px solid rgba(185, 180, 216, 0.28);
+  border-radius: 999px;
+  background: rgba(120, 90, 160, 0.2);
+  color: #ede9df;
+  padding: 0.7rem 1.1rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.ghostBtn {
+  background: transparent;
+}
+
+.primaryBtn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.error {
+  color: #ffb4b4;
+  margin: 0;
+}
+
+.warn {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.8rem;
+  background: rgba(180, 120, 40, 0.14);
+  border: 1px solid rgba(220, 170, 80, 0.28);
+  color: rgba(255, 230, 180, 0.9);
+  line-height: 1.55;
+}
+
+.dashboard {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.card {
+  padding: 1rem 1.1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(185, 180, 216, 0.14);
+  background: rgba(255, 255, 255, 0.03);
+  display: grid;
+  gap: 0.45rem;
+}
+
+.card span {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: rgba(185, 180, 216, 0.72);
+}
+
+.card strong {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.storage {
+  font-size: 1rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.panel {
+  padding: 1.1rem 1.2rem 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(185, 180, 216, 0.14);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.panelHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.panel h2 {
+  margin: 0 0 0.9rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.panelHead h2 {
+  margin: 0;
+}
+
+.bars {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.55rem;
+  align-items: end;
+  min-height: 10rem;
+}
+
+.barCol {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: center;
+}
+
+.barTrack {
+  width: 100%;
+  height: 8rem;
+  display: flex;
+  align-items: flex-end;
+  border-radius: 0.55rem;
+  background: rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+}
+
+.barFill {
+  width: 100%;
+  background: linear-gradient(180deg, rgba(185, 180, 216, 0.85), rgba(120, 90, 160, 0.55));
+}
+
+.barDate,
+.barMeta {
+  font-size: 0.68rem;
+  color: rgba(237, 233, 223, 0.62);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.rank {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.rank li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid rgba(185, 180, 216, 0.1);
+  font-size: 0.9rem;
+}
+
+.rank span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: rgba(237, 233, 223, 0.84);
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 0.55rem 0.4rem;
+  border-bottom: 1px solid rgba(185, 180, 216, 0.1);
+  vertical-align: top;
+}
+
+.table th {
+  color: rgba(185, 180, 216, 0.72);
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .cards,
+  .split {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .cards,
+  .split,
+  .bars {
+    grid-template-columns: 1fr;
+  }
+
+  .bars {
+    gap: 0.75rem;
+  }
+
+  .barTrack {
+    height: 4.5rem;
+  }
+}

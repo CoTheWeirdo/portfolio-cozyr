@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import AnalyticsBeacon from "@/components/analytics/AnalyticsBeacon";
 import "./globals.css";
 
 const instrumentSerif = localFont({
@@ -49,7 +50,10 @@ export default function RootLayout({
       lang="en"
       className={`${instrumentSerif.variable} ${figtree.variable} h-full antialiased`}
     >
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        {children}
+        <AnalyticsBeacon />
+      </body>
     </html>
   );
 }

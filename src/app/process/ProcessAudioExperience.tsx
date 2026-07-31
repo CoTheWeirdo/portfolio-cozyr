@@ -737,10 +737,11 @@ export default function ProcessAudioExperience() {
                 <button
                   type="button"
                   className={`${styles.slicePlay}${selectedSlicePlaying ? ` ${styles.slicePlayActive}` : ""}`}
+                  data-analytics={`${selectedSlicePlaying ? "暂停" : "播放"} ${selectedSlice.label} · 自动续费`}
                   aria-label={
                     selectedSlicePlaying
-                      ? `暂停 ${selectedSlice.label}`
-                      : `播放 ${selectedSlice.label}`
+                      ? `暂停 ${selectedSlice.label}《自动续费》`
+                      : `播放 ${selectedSlice.label}《自动续费》`
                   }
                   onClick={() => {
                     void toggleSlice(selectedSlice.id);
@@ -839,7 +840,9 @@ export default function ProcessAudioExperience() {
 
           <div className={styles.finalMeta}>
             <p className={styles.finalTag}>FINAL OUTPUT</p>
-            <p className={styles.finalSong}>自动续费</p>
+            <p className={styles.finalSong} data-analytics-track="自动续费">
+              自动续费
+            </p>
             <p className={styles.finalDuration}>{FULL_DURATION_LABEL}</p>
           </div>
 
@@ -847,10 +850,11 @@ export default function ProcessAudioExperience() {
             <button
               type="button"
               className={`${styles.fullPlay}${mode === "full" && playing ? ` ${styles.fullPlayActive}` : ""}`}
+              data-analytics="播放完整成品 · 自动续费"
               aria-label={
                 mode === "full" && playing
-                  ? "暂停完整成品"
-                  : "播放完整成品"
+                  ? "暂停完整成品《自动续费》"
+                  : "播放完整成品《自动续费》"
               }
               onClick={() => {
                 void toggleFull();
